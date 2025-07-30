@@ -177,4 +177,5 @@ public class AdminRestaurantController {
         return "redirect:/admin/restaurants/" + id + "/edit";
     }
 
+    
 }
