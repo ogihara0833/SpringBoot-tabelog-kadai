@@ -40,17 +40,23 @@ public class UserDetailsImpl implements UserDetails, Serializable {
 
     @Override
     public boolean isAccountNonExpired() {
-        return true; 
+
+
+        return true; // アカウント期限なし
     }
 
     @Override
     public boolean isAccountNonLocked() {
-        return true; 
+ 
+
+        return true; // ロックなし
     }
 
     @Override
     public boolean isCredentialsNonExpired() {
-        return true; 
+ 
+
+        return true; // パスワード期限なし
     }
 
     @Override
@@ -59,6 +65,6 @@ public class UserDetailsImpl implements UserDetails, Serializable {
     }
 
     public User getUser() {
-        return user; 
+        return user; // エンティティ参照用
     }
 }

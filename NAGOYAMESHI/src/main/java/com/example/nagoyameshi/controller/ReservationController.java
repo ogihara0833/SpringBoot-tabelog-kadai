@@ -35,6 +35,7 @@ public class ReservationController {
         this.restaurantService = restaurantService;
     }
 
+
     @GetMapping("/new")
     public String showForm(@RequestParam("restaurantId") Integer restaurantId,
                            @AuthenticationPrincipal UserDetailsImpl principal,
@@ -53,6 +54,7 @@ public class ReservationController {
         	model.addAttribute("restaurant", restaurant);
         return "reservations/form";
     }
+
 
     @PostMapping
     public String createReservation(@ModelAttribute @Valid ReservationForm form,
@@ -75,19 +77,19 @@ public class ReservationController {
 
         LocalTime time = form.getVisitTime();
 
+
      LocalTime lunchStart = restaurant.getLunchStart();
      LocalTime lunchEnd = restaurant.getLunchEnd();
      LocalTime dinnerStart = restaurant.getDinnerStart();
      LocalTime dinnerEnd = restaurant.getDinnerEnd();
 
      boolean isWithinLunch = lunchStart != null && lunchEnd != null
-                           && time != null
-                           && time.isAfter(lunchStart) && time.isBefore(lunchEnd);
+    		    && time != null
+    		    && !time.isBefore(lunchStart) && time.isBefore(lunchEnd);
 
      boolean isWithinDinner = dinnerStart != null && dinnerEnd != null
-                            && time != null
-                            && time.isAfter(dinnerStart) && time.isBefore(dinnerEnd);
-
+    		    && time != null
+    		    && !time.isBefore(dinnerStart) && time.isBefore(dinnerEnd);
      
      if (!(isWithinLunch || isWithinDinner)) {
          result.rejectValue("visitTime", null, "予約は営業時間内に限ります");
@@ -107,10 +109,12 @@ public class ReservationController {
         return "redirect:/reservations/complete";
     }
 
+
     @GetMapping("/complete")
     public String showComplete() {
         return "reservations/complete";
     }
+
 
     @GetMapping
     public String showReservationList(@AuthenticationPrincipal UserDetailsImpl principal,
@@ -126,6 +130,7 @@ public class ReservationController {
 
         return "reservations/list";
     }
+
 
     @GetMapping("/edit")
     public String showEditForm(@RequestParam("id") Integer reservationId,
@@ -159,6 +164,7 @@ public class ReservationController {
         return "reservations/edit";
     }
 
+
     @PostMapping("/update")
     public String updateReservation(@ModelAttribute @Valid ReservationForm form,
                                     BindingResult result,
@@ -182,10 +188,11 @@ public class ReservationController {
             return "reservations/edit";
         }
 
-        boolean isWithinLunch = form.getVisitTime().isAfter(restaurant.getLunchStart())
-                             && form.getVisitTime().isBefore(restaurant.getLunchEnd());
-        boolean isWithinDinner = form.getVisitTime().isAfter(restaurant.getDinnerStart())
-                             && form.getVisitTime().isBefore(restaurant.getDinnerEnd());
+        boolean isWithinLunch = !form.getVisitTime().isBefore(restaurant.getLunchStart())
+                && form.getVisitTime().isBefore(restaurant.getLunchEnd());
+
+        boolean isWithinDinner = !form.getVisitTime().isBefore(restaurant.getDinnerStart())
+                && form.getVisitTime().isBefore(restaurant.getDinnerEnd());
 
         if (!(isWithinLunch || isWithinDinner)) {
             result.rejectValue("visitTime", null, "営業時間外の時間は選べません");
@@ -202,6 +209,7 @@ public class ReservationController {
         return "redirect:/reservations";
     }
 
+
     @PostMapping("/cancel")
     public String cancelReservation(@RequestParam("reservationId") Integer reservationId,
                                     @AuthenticationPrincipal UserDetailsImpl principal) {
@@ -214,6 +222,7 @@ public class ReservationController {
         reservationService.cancelReservation(reservationId, user);
         return "redirect:/reservations";
     }
+
 
     @GetMapping("/detail")
     public String showReservationDetail(@RequestParam("id") Integer reservationId,

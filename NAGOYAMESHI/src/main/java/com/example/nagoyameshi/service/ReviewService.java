@@ -24,25 +24,31 @@ public class ReviewService {
         this.reviewRepository = reviewRepository;
     }
 
+
     public Optional<Review> findReviewById(Integer id) {
         return reviewRepository.findById(id);
     }
+
 
     public List<Review> findTop6ReviewsByRestaurantOrderByCreatedAtDesc(Restaurant restaurant) {
         return reviewRepository.findTop6ByRestaurantOrderByCreatedAtDesc(restaurant);
     }
 
+
     public Review findReviewByRestaurantAndUser(Restaurant restaurant, User user) {
         return reviewRepository.findByRestaurantAndUser(restaurant, user);
     }
+
 
     public long countReviewsByRestaurant(Restaurant restaurant) {
         return reviewRepository.countByRestaurant(restaurant);
     }
 
+
     public Page<Review> findReviewsByRestaurantOrderByCreatedAtDesc(Restaurant restaurant, Pageable pageable) {
         return reviewRepository.findByRestaurantOrderByCreatedAtDesc(restaurant, pageable);
     }
+
 
     @Transactional
     public void createReview(ReviewRegisterForm reviewRegisterForm, Restaurant restaurant, User user) {
@@ -55,6 +61,7 @@ public class ReviewService {
         reviewRepository.save(review);
     }
 
+
     @Transactional
     public void updateReview(ReviewEditForm reviewEditForm, Review review) {
         review.setScore(reviewEditForm.getScore());
@@ -63,10 +70,12 @@ public class ReviewService {
         reviewRepository.save(review);
     }
 
+
     @Transactional
     public void deleteReview(Review review) {
         reviewRepository.delete(review);
     }
+
 
     public boolean hasUserAlreadyReviewed(Restaurant restaurant, User user) {
         return reviewRepository.findByRestaurantAndUser(restaurant, user) != null;

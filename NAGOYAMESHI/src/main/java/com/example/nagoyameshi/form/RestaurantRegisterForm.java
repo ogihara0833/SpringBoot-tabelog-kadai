@@ -23,11 +23,13 @@ public class RestaurantRegisterForm {
     @NotNull(message = "カテゴリを選択してください。")
     private Integer categoryId;
 
+
     @DateTimeFormat(pattern = "HH:mm")
     private LocalTime lunchStart;
 
     @DateTimeFormat(pattern = "HH:mm")
     private LocalTime lunchEnd;
+
 
     @DateTimeFormat(pattern = "HH:mm")
     private LocalTime dinnerStart;
@@ -35,11 +37,13 @@ public class RestaurantRegisterForm {
     @DateTimeFormat(pattern = "HH:mm")
     private LocalTime dinnerEnd;
 
+
     @Min(value = 1, message = "ランチ価格（下限）は1円以上で入力してください。")
     private Integer lunchPriceMin;
 
     @Min(value = 1, message = "ランチ価格（上限）は1円以上で入力してください。")
     private Integer lunchPriceMax;
+
 
     @Min(value = 1, message = "ディナー価格（下限）は1円以上で入力してください。")
     private Integer dinnerPriceMin;
@@ -60,6 +64,7 @@ public class RestaurantRegisterForm {
 
     private MultipartFile mainImageFile;
     private MultipartFile menuImageFile;
+
 
     private String imageName;
     private String menuImageName;

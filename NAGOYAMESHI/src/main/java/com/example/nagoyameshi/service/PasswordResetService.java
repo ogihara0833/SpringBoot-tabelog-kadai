@@ -31,6 +31,7 @@ public class PasswordResetService {
         this.passwordEncoder = passwordEncoder;
     }
 
+
     public void sendResetLink(User user, String appUrl) {
         String token = UUID.randomUUID().toString();
 
@@ -50,10 +51,12 @@ public class PasswordResetService {
         mailSender.send(message);
     }
 
+
     public boolean isTokenValid(String token) {
         PasswordResetToken resetToken = tokenRepository.findByToken(token);
         return resetToken != null && resetToken.getExpiryDate().isAfter(LocalDateTime.now());
     }
+
 
     public boolean resetPassword(String token, String newPassword) {
         PasswordResetToken resetToken = tokenRepository.findByToken(token);

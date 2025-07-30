@@ -19,13 +19,16 @@ public class ReservationService {
         this.reservationRepository = reservationRepository;
     }
 
+
     public void saveReservation(Reservation reservation) {
         reservationRepository.save(reservation);
     }
 
+
     public List<Reservation> getReservationsByUser(User user) {
         return reservationRepository.findByUser(user);
     }
+
 
     public void cancelReservation(Integer reservationId, User user) {
         Reservation reservation = reservationRepository.findByIdAndUser(reservationId, user);
@@ -34,6 +37,7 @@ public class ReservationService {
         }
     }
     
+
     public Optional<Reservation> findById(Integer reservationId) {
         return reservationRepository.findById(reservationId);
     }

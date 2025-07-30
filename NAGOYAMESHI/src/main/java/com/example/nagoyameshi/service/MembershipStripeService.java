@@ -23,6 +23,7 @@ public class MembershipStripeService {
 
         String requestUrl = request.getRequestURL().toString();
 
+
         SessionCreateParams params = SessionCreateParams.builder()
         	    .setClientReferenceId(String.valueOf(user.getId()))
         	    .addPaymentMethodType(SessionCreateParams.PaymentMethodType.CARD)
@@ -50,7 +51,8 @@ public class MembershipStripeService {
 
         try {
             Session session = Session.retrieve(sessionId);
-            return session.getSubscription(); 
+
+            return session.getSubscription(); // StripeからsubscriptionIdを取得！
         } catch (StripeException e) {
             e.printStackTrace();
             return null; 
@@ -62,8 +64,11 @@ public class MembershipStripeService {
 
         try {
             Subscription subscription = Subscription.retrieve(subscriptionId);
+
             subscription.cancel(); 
+            System.out.println("✅ Stripe契約キャンセル成功: " + subscriptionId);
         } catch (StripeException e) {
+            System.out.println("❌ Stripe契約キャンセル失敗: " + e.getMessage());
         }
     }
 }

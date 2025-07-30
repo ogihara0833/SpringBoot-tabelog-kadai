@@ -21,6 +21,7 @@ public class MembershipService {
         this.roleRepository = roleRepository;
     }
 
+
     @Transactional
     public void updateToPremium(Integer userId, String subscriptionId) {
         Optional<User> userOpt = userRepository.findById(userId);
@@ -44,6 +45,7 @@ public class MembershipService {
         user.setPremium(false);
         user.setStripeSubscriptionId(null); 
         user.setStripeCustomerId(null);
+
         userRepository.save(user);
     }
 }

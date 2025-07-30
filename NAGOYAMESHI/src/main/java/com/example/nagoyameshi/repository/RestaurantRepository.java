@@ -12,6 +12,7 @@ import com.example.nagoyameshi.entity.Restaurant;
 
 public interface RestaurantRepository extends JpaRepository<Restaurant, Integer> {
 
+
     @Query("""
         SELECT r FROM Restaurant r
         WHERE (:keyword IS NULL OR :keyword = '' OR
@@ -34,10 +35,14 @@ public interface RestaurantRepository extends JpaRepository<Restaurant, Integer>
         Pageable pageable
     );
 
+
     Page<Restaurant> findAllByOrderByIdAsc(Pageable pageable);
 
     Page<Restaurant> findByNameContainingIgnoreCase(String name, Pageable pageable);
     
+
+   
+    // ✅ 削除前の依存チェックで使用する
     boolean existsByCategoryId(Integer categoryId);
 
 	List<Restaurant> findByIsFeaturedTrueOrderByCreatedAtDesc();

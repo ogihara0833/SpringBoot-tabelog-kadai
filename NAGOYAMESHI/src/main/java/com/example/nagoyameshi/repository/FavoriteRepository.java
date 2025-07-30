@@ -12,6 +12,7 @@ import com.example.nagoyameshi.entity.User;
 
 public interface FavoriteRepository extends JpaRepository<Favorite, Integer> {
 
+
 	Page<Favorite> findByUser(User user, Pageable pageable);
 
     Optional<Favorite> findByUserAndRestaurant(User user, Restaurant restaurant);

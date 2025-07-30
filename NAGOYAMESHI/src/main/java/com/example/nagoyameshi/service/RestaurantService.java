@@ -26,6 +26,8 @@ public class RestaurantService {
     private final RestaurantRepository restaurantRepository;
     private final CategoryRepository categoryRepository;
 
+
+    // 保存先の絶対パス
     private static final String UPLOAD_DIR = "src/main/resources/static/storage/";
 
     public RestaurantService(
@@ -44,12 +46,18 @@ public class RestaurantService {
     public void create(RestaurantRegisterForm form) {
         Restaurant restaurant = new Restaurant();
 
+
+        // メイン画像保存
+
         if (!form.getMainImageFile().isEmpty()) {
             String hashedName = generateNewFileName(form.getMainImageFile().getOriginalFilename());
             Path filePath = Paths.get(UPLOAD_DIR + hashedName);
             saveFile(form.getMainImageFile(), filePath);
             restaurant.setImageName(hashedName);
         }
+
+
+        // メニュー画像保存
 
         if (!form.getMenuImageFile().isEmpty()) {
             String hashedName = generateNewFileName(form.getMenuImageFile().getOriginalFilename());
@@ -58,11 +66,15 @@ public class RestaurantService {
             restaurant.setMenuImageName(hashedName);
         }
 
+
+        // カテゴリ設定
         restaurant.setCategory(
             categoryRepository.findById(form.getCategoryId())
                 .orElseThrow(() -> new IllegalArgumentException("カテゴリが存在しません"))
         );
 
+
+        // その他フィールド設定
         restaurant.setName(form.getName());
         restaurant.setDescription(form.getDescription());
         restaurant.setPostalCode(form.getPostalCode());
@@ -73,6 +85,7 @@ public class RestaurantService {
         restaurant.setDinnerStart(form.getDinnerStart());
         restaurant.setDinnerEnd(form.getDinnerEnd());
         restaurant.setHoliday(form.getHoliday());
+
 
         restaurant.setLunchPriceMin(form.getLunchPriceMin());
         restaurant.setLunchPriceMax(form.getLunchPriceMax());
@@ -85,6 +98,7 @@ public class RestaurantService {
     @Transactional
     public void update(RestaurantEditForm form) {
         Restaurant restaurant = restaurantRepository.getReferenceById(form.getId());
+
 
         restaurant.setCategory(categoryRepository.getReferenceById(form.getCategoryId()));
         restaurant.setName(form.getName());
@@ -103,8 +117,11 @@ public class RestaurantService {
         restaurant.setDinnerPriceMax(form.getDinnerPriceMax());
         restaurant.setIsFeatured(Boolean.TRUE.equals(form.getIsFeatured()));
 
+        // メイン画像処理
         String mainImageName = storeImageOrFallback(form.getMainImageFile(), form.getImageName());
         restaurant.setImageName(mainImageName);
+
+        // メニュー画像処理
 
         String menuImageName = storeImageOrFallback(form.getMenuImageFile(), form.getMenuImageName());
         restaurant.setMenuImageName(menuImageName);
@@ -112,6 +129,8 @@ public class RestaurantService {
         restaurantRepository.save(restaurant);
     }
 
+
+    // ✅ 画像保存 or 保持の共通処理
     private String storeImageOrFallback(MultipartFile file, String fallbackName) {
         if (file != null && !file.isEmpty()) {
             String fileName = generateNewFileName(file.getOriginalFilename());
@@ -122,14 +141,18 @@ public class RestaurantService {
         return fallbackName;
     }
 
+
+    // ファイル名をUUIDで生成（拡張子保持）
     public String generateNewFileName(String fileName) {
         String ext = fileName.substring(fileName.lastIndexOf('.') + 1);
         return UUID.randomUUID().toString() + "." + ext;
     }
 
+    // ファイル保存処理
     public void saveFile(MultipartFile file, Path path) {
         try {
-            Files.createDirectories(path.getParent()); 
+            Files.createDirectories(path.getParent()); // storage フォルダがなければ作成
+
             Files.copy(file.getInputStream(), path);
             
             Path deployPath = Paths.get("target/classes/static/storage/", path.getFileName().toString());

@@ -29,7 +29,7 @@ public class UserService {
     private PasswordEncoder passwordEncoder;
 
     
-   
+
     public List<User> findAll() {
         return userRepository.findAll();
     }
@@ -42,7 +42,6 @@ public class UserService {
         return Optional.ofNullable(userRepository.findByEmail(email));
     }
 
-   
     @Transactional
     public User create(SignupForm form) {
         User user = new User();
@@ -66,7 +65,6 @@ public class UserService {
     }
 
    
-    
     public User update(User user) {
         return userRepository.save(user);
     }
@@ -105,4 +103,5 @@ public class UserService {
         User user = userRepository.getReferenceById(form.getId());
         return !user.getEmail().equals(form.getEmail());
     }
+
 }

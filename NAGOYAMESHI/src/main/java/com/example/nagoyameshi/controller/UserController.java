@@ -32,12 +32,14 @@ public class UserController {
         this.userRepository = userRepository;
     }
 
+
     @GetMapping
     public String index(@AuthenticationPrincipal UserDetailsImpl userDetailsImpl, Model model) {
         User user = userRepository.getReferenceById(userDetailsImpl.getUser().getId());
         model.addAttribute("user", user);
         return "user/index";
     }
+
 
     @GetMapping("/edit")
     public String edit(@AuthenticationPrincipal UserDetailsImpl userDetailsImpl, Model model) {
@@ -52,6 +54,7 @@ public class UserController {
         model.addAttribute("userEditForm", form);
         return "user/edit";
     }
+
 
     @PostMapping("/update")
     public String update(
@@ -73,8 +76,11 @@ public class UserController {
             return "user/edit";
         }
 
+
+        // 🔄 DB更新
         userService.update(userEditForm);
 
+        // 🧠 セッションの認証情報を更新
         User updatedUser = userRepository.findById(userEditForm.getId()).orElseThrow();
         UserDetailsImpl newUserDetails = new UserDetailsImpl(updatedUser);
         UsernamePasswordAuthenticationToken newAuth =

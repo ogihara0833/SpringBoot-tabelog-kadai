@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import com.example.nagoyameshi.constant.MembershipType;
 import com.example.nagoyameshi.entity.User;
 import com.example.nagoyameshi.entity.VerificationToken;
 import com.example.nagoyameshi.event.SignupEventPublisher;
@@ -37,17 +38,24 @@ public class AuthController {
         this.verificationTokenService = verificationTokenService;
     }
 
+
+    // ログインページ
     @GetMapping("/login")
     public String login() {
         return "auth/login";
     }
 
+
+    // 会員登録フォーム表示
     @GetMapping("/signup")
     public String signup(Model model) {
-        model.addAttribute("signupForm", new SignupForm());
+        SignupForm signupForm = new SignupForm();
+        signupForm.setMembershipType(MembershipType.FREE);
+        model.addAttribute("signupForm", signupForm);
         return "auth/signup";
     }
 
+    // 会員登録処理（メール送信あり）
     @PostMapping("/signup")
     public String signup(
         @ModelAttribute @Validated SignupForm signupForm,
@@ -55,6 +63,7 @@ public class AuthController {
         RedirectAttributes redirectAttributes,
         HttpServletRequest request
     ) {
+        
         if (userService.isEmailRegistered(signupForm.getEmail())) {
             bindingResult.addError(new FieldError("signupForm", "email", "すでに登録済みのメールアドレスです。"));
         }
@@ -78,6 +87,7 @@ public class AuthController {
 
         return "redirect:/";
     }
+
 
     @GetMapping("/signup/verify")
     public String verify(@RequestParam(name = "token") String token, Model model) {

@@ -29,6 +29,7 @@ public class Restaurant {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
+
     @ManyToOne
     @JoinColumn(name = "category_id", nullable = false)
     private Category category;
@@ -66,17 +67,20 @@ public class Restaurant {
     @Column(name = "lunch_end")
     private LocalTime lunchEnd;
 
+
     @Column(name = "dinner_start")
     private LocalTime dinnerStart;
 
     @Column(name = "dinner_end")
     private LocalTime dinnerEnd;
 
+
     @Column(name = "lunch_price_min")
     private Integer lunchPriceMin;
 
     @Column(name = "lunch_price_max")
     private Integer lunchPriceMax;
+
 
     @Column(name = "dinner_price_min")
     private Integer dinnerPriceMin;

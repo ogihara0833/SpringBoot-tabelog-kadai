@@ -86,6 +86,7 @@ public class RestaurantController {
             model.addAttribute("hasUserAlreadyReviewed", hasUserAlreadyReviewed);
         }
 
+
         List<com.example.nagoyameshi.entity.Review> newReviews =
             reviewService.findTop6ReviewsByRestaurantOrderByCreatedAtDesc(restaurant);
 

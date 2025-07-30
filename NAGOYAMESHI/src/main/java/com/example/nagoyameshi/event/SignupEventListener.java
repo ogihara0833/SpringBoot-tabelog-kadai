@@ -37,6 +37,8 @@ public class SignupEventListener {
 
         String verifyUrl = requestUrl + "/signup/verify?token=" + token;
 
+        // メール送信
+
         sendVerificationEmail(user.getEmail(), verifyUrl);
     }
 
@@ -56,7 +58,8 @@ public class SignupEventListener {
 
             mailSender.send(message);
         } catch (MessagingException e) {
-            e.printStackTrace(); 
+
+            e.printStackTrace(); // ログ出力などに切り替えてもOK！
         }
     }
 }

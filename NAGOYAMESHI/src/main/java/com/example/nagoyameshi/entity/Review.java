@@ -22,13 +22,16 @@ public class Review {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
+
     @ManyToOne
     @JoinColumn(name = "restaurant_id")
     private Restaurant restaurant;
 
+
     @ManyToOne
     @JoinColumn(name = "user_id")
     private User user;
+
 
     @Column(nullable = false)
     private Integer score;
@@ -47,6 +50,7 @@ public class Review {
     @Column(name = "created_at", insertable = false, updatable = false)
     private Timestamp createdAt;
 
+    // 🔁 更新日時（DBで自動更新）
     @Column(name = "updated_at", insertable = false, updatable = false)
     private Timestamp updatedAt;
 }

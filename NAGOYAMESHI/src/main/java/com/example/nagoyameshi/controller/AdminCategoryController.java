@@ -49,13 +49,16 @@ public class AdminCategoryController {
     }
 
 
+    // ✅ 新規作成画面（→ new.html）
     @GetMapping("/new")
     public String newCategory(Model model) {
         model.addAttribute("category", new Category());
         return "admin/categories/new";
     }
 
-       @PostMapping
+       
+    // ✅ 新規登録処理
+    @PostMapping
     public String create(@ModelAttribute Category category, RedirectAttributes redirectAttributes) {
         if (categoryRepository.existsByNameIgnoreCase(category.getName())) {
             redirectAttributes.addFlashAttribute("errorMessage", "すでに登録されているカテゴリ名です。");
@@ -67,6 +70,8 @@ public class AdminCategoryController {
         return "redirect:/admin/categories";
     }
 
+
+    // ✅ 編集画面（→ edit.html）
     @GetMapping("/{id}/edit")
     public String edit(@PathVariable Integer id, Model model) {
         var category = categoryRepository.findById(id).orElseThrow();
@@ -74,6 +79,8 @@ public class AdminCategoryController {
         return "admin/categories/edit";
     }
 
+
+    // ✅ 更新処理
     @PostMapping("/{id}/update")
     public String update(@PathVariable Integer id,
                          @ModelAttribute Category category,
@@ -94,10 +101,11 @@ public class AdminCategoryController {
         return "redirect:/admin/categories";
     }
 
-
+    // ✅ 削除処理（依存してる場合は失敗）
     @PostMapping("/{id}/delete")
     public String delete(@PathVariable Integer id, RedirectAttributes redirectAttributes) {
 
+        // 🔍 店舗で使われてたら削除NG！
         if (restaurantRepository.existsByCategoryId(id)) {
             redirectAttributes.addFlashAttribute("errorMessage", "このカテゴリは店舗で使用中のため削除できません。");
             return "redirect:/admin/categories";

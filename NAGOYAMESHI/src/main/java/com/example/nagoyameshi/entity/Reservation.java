@@ -24,15 +24,17 @@ public class Reservation {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
+
     @ManyToOne
     @JoinColumn(name = "restaurant_id", nullable = false)
     private Restaurant restaurant;
+
 
     @ManyToOne
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
-    @Column(name = "visit_date", nullable = false)
+   @Column(name = "visit_date", nullable = false)
     private LocalDate visitDate;
 
     @Column(name = "visit_time", nullable = false)

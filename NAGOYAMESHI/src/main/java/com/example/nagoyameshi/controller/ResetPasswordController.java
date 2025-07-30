@@ -24,7 +24,8 @@ public class ResetPasswordController {
     private final UserService userService;
     private final PasswordResetService passwordResetService;
 
-    @Value("${app.url}") 
+
+    @Value("${app.url}") // ← http://localhost:8080 や本番URLなど
     private String appUrl;
 
     public ResetPasswordController(UserService userService, PasswordResetService passwordResetService) {
@@ -32,12 +33,13 @@ public class ResetPasswordController {
         this.passwordResetService = passwordResetService;
     }
 
+
     @GetMapping
     public String showRequestForm() {
         return "auth/resetRequest";
     }
 
-    @PostMapping("/request")
+   @PostMapping("/request")
     public String handleRequest(@RequestParam("email") String email,
                                 RedirectAttributes redirectAttributes,
                                 HttpServletRequest request) {
@@ -56,6 +58,7 @@ public class ResetPasswordController {
         return "redirect:/reset-password";
     }
 
+
     @GetMapping("/change")
     public String showChangeForm(@RequestParam("token") String token, Model model) {
         if (!passwordResetService.isTokenValid(token)) {
@@ -66,6 +69,7 @@ public class ResetPasswordController {
         model.addAttribute("token", token);
         return "auth/resetPassword";
     }
+
 
     @PostMapping("/change")
     public String handleChange(@RequestParam("token") String token,

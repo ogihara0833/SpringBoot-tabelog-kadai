@@ -25,13 +25,16 @@ public class Favorite {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
+
     @ManyToOne
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
+
     @ManyToOne
     @JoinColumn(name = "restaurant_id", nullable = false)
     private Restaurant restaurant;
+
 
     @Column(name = "created_at", nullable = false)
     private LocalDateTime createdAt;

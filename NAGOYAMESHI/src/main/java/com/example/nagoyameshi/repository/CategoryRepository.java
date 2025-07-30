@@ -10,6 +10,7 @@ public interface CategoryRepository extends JpaRepository<Category, Integer> {
 
     List<Category> findByNameContainingIgnoreCaseOrderByIdAsc(String name);
 
+ 
     boolean existsByNameIgnoreCase(String name);
     
     List<Category> findAllByOrderByNameAsc();

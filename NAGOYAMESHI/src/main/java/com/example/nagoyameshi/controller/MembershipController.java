@@ -34,15 +34,21 @@ public class MembershipController {
     	this.userRepository = userRepository;
 }
 
+
+   
+    // ✅ 有料会員登録画面を表示（FREEユーザー限定）
     @GetMapping("/upgrade")
     public String showUpgradePage(@AuthenticationPrincipal UserDetailsImpl userDetails, Model model) {
         if (!userDetails.getUser().getRole().getName().equals("FREE")) {
             return "redirect:/"; 
+
         }
         model.addAttribute("user", userDetails.getUser());
         return "membership/upgrade";
     }
 
+
+    // ✅ Stripeセッション生成→checkout.htmlでリダイレクト処理
     @PostMapping("/upgrade")
     public String upgradeToPremium(@AuthenticationPrincipal UserDetailsImpl userDetails,
                                    HttpServletRequest request,
@@ -56,6 +62,7 @@ public class MembershipController {
     @GetMapping("/complete")
     public String showCompletePage(@AuthenticationPrincipal UserDetailsImpl userDetails,
                                    HttpServletRequest request) {
+
         String sessionId = request.getParameter("session_id");
 
         String subscriptionId = stripeService.retrieveSubscriptionId(sessionId);
@@ -75,28 +82,35 @@ public class MembershipController {
     }
 
     
+
     @GetMapping("/cancel")
     public String showCancelPage(@AuthenticationPrincipal UserDetailsImpl userDetails, Model model) {
         model.addAttribute("user", userDetails.getUser());
         return "membership/cancel";
     }
 
+
     @PostMapping("/cancel")
     public String cancelMembership(@AuthenticationPrincipal UserDetailsImpl userDetails,
                                    RedirectAttributes redirectAttributes) {
         User updatedUser = userDetails.getUser();
+
 
         String subscriptionId = updatedUser.getStripeSubscriptionId();
         if (subscriptionId != null && !subscriptionId.isEmpty()) {
             stripeService.cancelSubscription(subscriptionId);
         }
 
+
+        // 🔄 DB上のロールを FREE に
         membershipService.downgradeToFree(updatedUser);
 
+        // 🧠 認証情報を再構築（FREE版）
         UserDetailsImpl newUserDetails = new UserDetailsImpl(updatedUser);
         UsernamePasswordAuthenticationToken newAuth =
             new UsernamePasswordAuthenticationToken(newUserDetails, null, newUserDetails.getAuthorities());
         SecurityContextHolder.getContext().setAuthentication(newAuth);
+
 
         redirectAttributes.addFlashAttribute("successMessage", "退会手続きが完了しました。");
 
@@ -106,6 +120,7 @@ public class MembershipController {
     @GetMapping("/portal")
     public String showPortalPage(@AuthenticationPrincipal UserDetailsImpl userDetails, Model model) {
         model.addAttribute("user", userDetails.getUser());
+
         return "membership/portal"; 
     }
 }

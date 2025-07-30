@@ -38,6 +38,7 @@ public class ReviewController {
         this.reviewService = reviewService;
     }
 
+
     @GetMapping
     public String index(@PathVariable Integer restaurantId,
                         @PageableDefault(page = 0, size = 10) Pageable pageable,
@@ -57,6 +58,7 @@ public class ReviewController {
 
         return "reviews/index";
     }
+
 
     @GetMapping("/register")
     public String register(@PathVariable Integer restaurantId,
@@ -80,6 +82,7 @@ public class ReviewController {
 
         return "reviews/register";
     }
+
 
     @PostMapping("/create")
     public String create(@PathVariable Integer restaurantId,
@@ -113,6 +116,7 @@ public class ReviewController {
 
         return "redirect:/restaurants/" + restaurantId;
     }
+
 
     @GetMapping("/{reviewId}/edit")
     public String edit(@PathVariable Integer restaurantId,
@@ -148,6 +152,7 @@ public class ReviewController {
 
         return "reviews/edit";
     }
+
 
     @PostMapping("/{reviewId}/update")
     public String update(@PathVariable Integer restaurantId,
@@ -189,6 +194,7 @@ public class ReviewController {
 
         return "redirect:/restaurants/" + restaurantId;
     }
+
 
     @PostMapping("/{reviewId}/delete")
     public String delete(@PathVariable Integer restaurantId,

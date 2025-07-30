@@ -45,7 +45,6 @@ public class AdminUserController {
         return "admin/users/index";
     }
 
-    
     @GetMapping("/{id}")
     public String showUserDetail(@PathVariable Integer id, Model model) {
         User user = userRepository.findById(id)

@@ -30,6 +30,7 @@ public class PasswordResetToken {
     @Column(nullable = false)
     private LocalDateTime expiryDate;
 
+
     public Integer getId() {
         return id;
     }
