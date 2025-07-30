@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html xmlns:th="https://www.thymeleaf.org">
+<head>
+  <div th:replace="~{fragment :: meta}"></div>
+  <div th:replace="~{fragment :: styles}"></div>
+  <title>退会確認</title>
+</head>
+<body>
+  <div class="nagoyameshi-wrapper">
+    <div th:replace="~{fragment :: header}"></div>
+
+    <main>
+      <div class="container pt-5 pb-5 nagoyameshi-container text-center">
+        <h1 class="mb-4 text-danger">N・MESHIメンバーを退会しますか？</h1>
+        <p class="mb-4">退会するとお気に入りや予約機能が使えなくなります。</p>
+		<form th:action="@{/membership/cancel}" method="post" onsubmit="return confirm('本当に退会しますか？')">
+		  <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+		  <button type="submit" class="btn btn-danger">退会する</button>
+		</form>
+        <div class="mt-3">
+          <a th:href="@{/user}">戻る</a>
+        </div>
+      </div>
+    </main>
+
+    <div th:replace="~{fragment :: footer}"></div>
+  </div>
+  <div th:replace="~{fragment :: scripts}"></div>
+</body>
+</html>

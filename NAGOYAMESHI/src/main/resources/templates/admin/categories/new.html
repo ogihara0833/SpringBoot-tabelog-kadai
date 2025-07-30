@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <div th:replace="~{fragment :: meta}"></div>
+  <div th:replace="~{fragment :: styles}"></div>
+  <title>カテゴリ登録</title>
+</head>
+<body>
+  <div th:replace="~{fragment :: header}"></div>
+
+  <div class="container py-5">
+    <h2 class="text-center mb-4">カテゴリ登録</h2>
+
+    <!-- ✅ エラーメッセージ（登録失敗時） -->
+    <div th:if="${errorMessage}" class="alert alert-danger text-center mb-3">
+      <span th:text="${errorMessage}"></span>
+    </div>
+
+    <!-- ✅ 成功メッセージ（登録完了時）※基本はindex.htmlで表示 -->
+    <div th:if="${successMessage}" class="alert alert-success text-center mb-3">
+      <span th:text="${successMessage}"></span>
+    </div>
+
+    <!-- ✅ 新規登録フォーム -->
+    <form th:action="@{/admin/categories}" th:object="${category}" method="post" class="mx-auto" style="max-width:500px;">
+      
+      <!-- CSRFトークン -->
+      <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+
+      <div class="mb-3">
+        <label for="name" class="form-label">カテゴリ名</label>
+        <input type="text" th:field="*{name}" class="form-control" placeholder="カテゴリ名を入力" required>
+      </div>
+
+      <div class="text-center">
+        <button type="submit" class="btn btn-success">登録</button>
+        <a th:href="@{/admin/categories}" class="btn btn-secondary ms-2">戻る</a>
+      </div>
+    </form>
+  </div>
+
+  <div th:replace="~{fragment :: footer}"></div>
+  <div th:replace="~{fragment :: scripts}"></div>
+</body>
+</html>

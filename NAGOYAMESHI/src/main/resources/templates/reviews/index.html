@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title th:text="${restaurant.name + '｜レビュー一覧'}">レビュー一覧</title>
+  <div th:replace="~{fragment :: meta}"></div>
+  <div th:replace="~{fragment :: styles}"></div>
+</head>
+<body>
+<div class="nagoyameshi-wrapper">
+  <div th:replace="~{fragment :: header}"></div>
+  <main>
+    <div class="container pt-4 pb-5 nagoyameshi-container">
+      <div class="row justify-content-center">
+        <div class="col-xl-8">
+
+          <h2 class="mb-4 text-center" th:text="${restaurant.name + 'のレビュー一覧'}">レビュー一覧</h2>
+
+          <!-- 📃 レビューの繰り返し表示 -->
+          <div th:each="review : ${reviewPage.content}" class="border-bottom pb-3 mb-4">
+            <p class="fw-bold mb-1" th:text="${review.user.name}">ユーザー名</p>
+            <p class="text-warning mb-1">
+				<span th:text="${review.starRating}">★★★★★</span>
+            </p>
+            <p class="mb-2" th:text="${review.content}">レビュー内容</p>
+
+            <!-- ✏️ 編集・削除ボタン（投稿者本人のみ） -->
+            <div th:if="${user != null and user.id == review.user.id}" class="text-end">
+              <a th:href="@{/restaurants/{restaurantId}/reviews/{reviewId}/edit(restaurantId=${restaurant.id}, reviewId=${review.id})}"
+                 class="btn btn-sm btn-outline-primary me-2">編集</a>
+              <form th:action="@{/restaurants/{restaurantId}/reviews/{reviewId}/delete(restaurantId=${restaurant.id}, reviewId=${review.id})}"
+                    method="post" style="display:inline;">
+                <button type="submit" class="btn btn-sm btn-outline-danger">削除</button>
+              </form>
+            </div>
+          </div>
+
+          <!-- 🔁 ページネーション -->
+          <nav th:if="${reviewPage.totalPages > 1}">
+            <ul class="pagination justify-content-center">
+              <li th:classappend="${reviewPage.first} ? 'disabled'" class="page-item">
+                <a class="page-link" th:href="@{|?page=0|}">最初</a>
+              </li>
+              <li th:each="i : ${#numbers.sequence(0, reviewPage.totalPages - 1)}"
+                  th:classappend="${i == reviewPage.number} ? 'active'" class="page-item">
+                <a class="page-link" th:href="@{|?page=${i}|}" th:text="${i + 1}">1</a>
+              </li>
+              <li th:classappend="${reviewPage.last} ? 'disabled'" class="page-item">
+                <a class="page-link" th:href="@{|?page=${reviewPage.totalPages - 1}|}">最後</a>
+              </li>
+            </ul>
+          </nav>
+
+          <!-- 🔙 戻るリンク -->
+          <div class="text-center mt-4">
+            <a class="btn btn-secondary" th:href="@{/restaurants/{id}(id=${restaurant.id})}">店舗詳細に戻る</a>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </main>
+  <div th:replace="~{fragment :: footer}"></div>
+</div>
+<div th:replace="~{fragment :: scripts}"></div>
+</body>
+</html>

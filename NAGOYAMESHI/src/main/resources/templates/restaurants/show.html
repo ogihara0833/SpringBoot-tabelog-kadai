@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html xmlns:th="https://www.thymeleaf.org">
+	<head>
+	  <meta charset="UTF-8">
+	  <meta name="_csrf" th:content="${_csrf.token}" />
+	  <meta name="_csrf_header" th:content="${_csrf.headerName}" />
+
+	  <div th:replace="~{fragment :: meta}"></div>
+	  <div th:replace="~{fragment :: styles}"></div>
+	  <title th:text="${restaurant.name + '｜店舗詳細'}">店舗詳細</title>
+	</head>
+<body>
+<div class="nagoyameshi-wrapper">
+  <div th:replace="~{fragment :: header}"></div>
+  <main>
+    <div class="container pt-4 pb-5 nagoyameshi-container">
+      <div class="row justify-content-center">
+        <div class="col-xl-8">
+          <h1 class="mb-4 text-center" th:text="${restaurant.name}">店舗名</h1>
+		  
+		  <!-- お気に入りボタン：有料会員のみ表示 -->
+		  <div class="text-center mb-3" id="favorite-buttons"
+		       th:if="${user != null and user.isPremium and user.role.name == 'PREMIUM'}">
+
+		    <!-- お気に入り追加フォーム（お気に入り未登録時） -->
+		    <form id="favorite-add-form"
+		          th:action="@{/favorites/create/{id}(id=${restaurant.id})}"
+		          method="post"
+		          th:style="'display:' + (${isFavorite} ? 'none' : 'block')">
+		      <button type="submit" class="btn btn-outline-danger">❤ お気に入り追加</button>
+		    </form>
+
+		    <!-- お気に入り解除ボタン（お気に入り登録済み時） -->
+		    <button id="favorite-delete-btn"
+		            th:if="${isFavorite}"
+		            type="button"
+		            class="btn btn-danger"
+		            th:data-favorite-id="${favorite.id}"
+		            th:data-restaurant-id="${restaurant.id}">
+		      ❤ お気に入り解除
+		    </button>
+		  </div>
+
+          <!-- 🖼️ メイン画像 -->
+          <div class="text-center mb-4">
+            <img th:if="${restaurant.imageName != null}" th:src="@{/storage/{img}(img=${restaurant.imageName})}"
+                 class="img-fluid rounded" alt="店舗画像">
+            <img th:if="${restaurant.imageName == null}" th:src="@{/images/noImage.png}"
+                 class="img-fluid rounded" alt="NO IMAGE">
+          </div>
+		  
+		  <!-- 📅 プレミアム会員だけに表示される予約ボタン -->
+		  <div class="text-center mb-4"
+		       th:if="${user != null and user.isPremium and user.role.name == 'PREMIUM'}">
+		    <form th:action="@{/reservations/new}" method="get">
+		      <input type="hidden" name="restaurantId" th:value="${restaurant.id}">
+		      <button type="submit" class="btn btn-success">この店舗を予約する</button>
+		    </form>
+		  </div>
+
+		  <!-- ⛔ 一般会員には案内だけ表示 -->
+		  <div class="text-center mb-4"
+		       th:if="${user != null and (user.isPremium == false or user.role.name != 'PREMIUM')}">
+		    <p class="text-danger">※予約機能はプレミアム会員専用です</p>
+		  </div>
+
+
+          <!-- 🏷️ 基本情報 -->
+          <div class="mb-3">
+            <p><strong>カテゴリ：</strong> <span th:text="${restaurant.category.name}"></span></p>
+            <p><strong>住所：</strong> <span th:text="${restaurant.address}"></span></p>
+            <p><strong>電話番号：</strong> <span th:text="${restaurant.phoneNumber}"></span></p>
+            <p><strong>定休日：</strong> <span th:text="${restaurant.holiday}"></span></p>
+            <p><strong>紹介文：</strong></p>
+            <p th:text="${restaurant.description}"></p>
+          </div>
+
+          <!-- ⏰ 営業時間 -->
+          <div class="mb-3">
+            <h5>営業時間</h5>
+            <p th:if="${restaurant.lunchStart != null}" 
+               th:text="'昼：' + ${#temporals.format(restaurant.lunchStart, 'HH:mm')} + '〜' + ${#temporals.format(restaurant.lunchEnd, 'HH:mm')}"></p>
+            <p th:if="${restaurant.dinnerStart != null}" 
+               th:text="'夜：' + ${#temporals.format(restaurant.dinnerStart, 'HH:mm')} + '〜' + ${#temporals.format(restaurant.dinnerEnd, 'HH:mm')}"></p>
+          </div>
+
+          <!-- 💰 価格帯 -->
+          <div class="mb-4">
+            <h5>価格帯</h5>
+            <p th:if="${restaurant.lunchPriceMin != null}" 
+               th:text="'昼：' + ${restaurant.lunchPriceMin} + '〜' + ${restaurant.lunchPriceMax} + '円'"></p>
+            <p th:if="${restaurant.dinnerPriceMin != null}" 
+               th:text="'夜：' + ${restaurant.dinnerPriceMin} + '〜' + ${restaurant.dinnerPriceMax} + '円'"></p>
+          </div>
+
+          <!-- 🖼️ メニュー画像 -->
+          <div th:if="${restaurant.menuImageName != null}" class="text-center mb-4">
+            <h5>メニュー画像</h5>
+            <img th:src="@{/storage/{img}(img=${restaurant.menuImageName})}" class="img-fluid rounded" alt="メニュー画像">
+          </div>
+		  <!-- 📝 レビューセクション -->
+		  <div class="mt-5">
+		    <h5 class="mb-3">レビュー</h5>
+
+		    <!-- 🔘 レビュー投稿ボタン（有料会員・未投稿のみ） -->
+		    <div class="mb-3 text-end" th:if="${user != null and user.role.name == 'PREMIUM' and !hasUserAlreadyReviewed}">
+		      <a th:href="@{/restaurants/{id}/reviews/register(id=${restaurant.id})}" class="btn btn-warning">レビューを投稿する</a>
+		    </div>
+
+		    <!-- 📃 レビュー一覧表示 -->
+		    <div th:if="${totalReviewCount > 0}">
+		      <div th:each="review : ${newReviews}" class="border-bottom pb-3 mb-3">
+		        <p class="fw-bold mb-1" th:text="${review.user.name}">ユーザー名</p>
+		        <p class="text-warning mb-1">
+					<span th:text="${review.starRating}">★★★★★</span>
+		        </p>
+		        <p class="mb-2" th:text="${review.content}">レビュー内容</p>
+
+		        <!-- ✏️ 編集・削除リンク（投稿者本人のみ） -->
+		        <div th:if="${user != null and review.user.id == user.id}" class="mb-2 text-end">
+		          <a th:href="@{/restaurants/{restaurantId}/reviews/{reviewId}/edit(restaurantId=${restaurant.id}, reviewId=${review.id})}" class="btn btn-sm btn-outline-primary me-2">編集</a>
+				  <form th:action="@{/restaurants/{restaurantId}/reviews/{reviewId}/delete(restaurantId=${restaurant.id}, reviewId=${review.id})}"
+				        method="post"
+				        style="display:inline;"
+				        onsubmit="return confirm('このレビューを削除してもよろしいですか？');">
+				    <button type="submit" class="btn btn-sm btn-outline-danger">削除</button>
+				  </form>
+		        </div>
+		      </div>
+		      <div class="text-end">
+		        <a th:href="@{/restaurants/{id}/reviews(id=${restaurant.id})}">すべてのレビューを見る</a>
+		      </div>
+		    </div>
+
+		    <!-- 🕊️ レビューゼロ -->
+		    <p th:if="${totalReviewCount == 0}" class="text-muted">まだレビューがありません。</p>
+		  </div>
+
+          <!-- 🔙 戻る -->
+          <div class="text-center">
+            <a class="btn btn-secondary" th:href="@{/restaurants}">一覧に戻る</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+  <div th:replace="~{fragment :: footer}"></div>
+</div>
+<div th:replace="~{fragment :: scripts}"></div>
+</body>
+</html>

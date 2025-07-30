@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html xmlns:th="https://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+  <head>
+    <div th:replace="~{fragment :: meta}"></div>
+    <div th:replace="~{fragment :: styles}"></div>
+    <title>店舗登録</title>
+  </head>
+  <body>
+    <div class="nagoyameshi-wrapper">
+      <div th:replace="~{fragment :: header}"></div>
+      <main>
+        <div class="container pt-5 pb-5 nagoyameshi-container">
+          <div class="row justify-content-center">
+            <div class="col-lg-9">
+              <h1 class="mb-4 text-center">店舗登録</h1>
+
+              <!-- 登録フォーム -->
+              <form th:action="@{/admin/restaurants/register}" method="post" enctype="multipart/form-data" th:object="${restaurantRegisterForm}">
+				<input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+
+
+                <!-- 店名 -->
+				<div class="mb-3">
+				  <label for="name" class="form-label">店名</label>
+				  <input type="text" class="form-control" id="name" th:field="*{name}">
+				  <div class="text-danger small mt-1" th:if="${#fields.hasErrors('name')}" th:errors="*{name}"></div>
+				</div>
+
+				<!-- 店舗画像 -->
+				<div class="mb-3">
+				  <label class="form-label">店舗画像</label>
+				  <input type="file" class="form-control" th:field="*{mainImageFile}" onchange="previewImage(event, 'mainImagePreview')" />
+				  <div class="mt-2" id="mainImagePreview">
+				    <div th:if="*{imageName} != null">
+				      <img th:src="@{/storage/{img}(img=*{imageName})}" class="img-fluid border" style="max-height:300px;" />
+				    </div>
+				    <div class="text-danger small" th:if="${#fields.hasErrors('mainImageFile')}" th:errors="*{mainImageFile}"></div>
+				  </div>
+				</div>
+
+				<!-- メニュー画像 -->
+				<div class="mb-3">
+				  <label class="form-label">メニュー画像</label>
+				  <input type="file" class="form-control" th:field="*{menuImageFile}" onchange="previewImage(event, 'menuImagePreview')" />
+				  <div class="mt-2" id="menuImagePreview">
+				    <div th:if="*{menuImageName} != null">
+				      <img th:src="@{/storage/{img}(img=*{menuImageName})}" class="img-fluid border" style="max-height:300px;" />
+				    </div>
+				    <div class="text-danger small" th:if="${#fields.hasErrors('menuImageFile')}" th:errors="*{menuImageFile}"></div>
+				  </div>
+				</div>
+
+				<!--カテゴリ選択-->
+				<div class="mb-3">
+				  <label for="categoryId" class="form-label">カテゴリ</label>
+				  <select class="form-select" id="categoryId" th:field="*{categoryId}">
+				    <option value="">選択してください</option>
+				    <option th:each="category : ${categoryList}"
+				            th:value="${category.id}"
+				            th:text="${category.name}"></option>
+				  </select>
+				  <div class="text-danger small mt-1" th:if="${#fields.hasErrors('categoryId')}" th:errors="*{categoryId}"></div>
+				</div>
+
+				<!-- 店舗説明 -->
+				<div class="mb-3">
+				  <label for="description" class="form-label">店舗説明</label>
+				  <textarea class="form-control" id="description" rows="4" th:field="*{description}"></textarea>
+				  <div class="text-danger small mt-1" th:if="${#fields.hasErrors('description')}" th:errors="*{description}"></div>
+				</div>
+
+				<!-- 昼の営業時間 -->
+				<div class="mb-3">
+				  <label class="form-label">昼の営業時間</label>
+				  <div class="d-flex gap-2 align-items-center">
+				    <input type="time" class="form-control" th:field="*{lunchStart}">
+				    <span class="fw-bold">〜</span>
+				    <input type="time" class="form-control" th:field="*{lunchEnd}">
+				  </div>
+				  <div class="text-danger small" th:if="${#fields.hasErrors('lunchStart')}" th:errors="*{lunchStart}"></div>
+				  <div class="text-danger small" th:if="${#fields.hasErrors('lunchEnd')}" th:errors="*{lunchEnd}"></div>
+				</div>
+
+				<!-- 夜の営業時間 -->
+				<div class="mb-3">
+				  <label class="form-label">夜の営業時間</label>
+				  <div class="d-flex gap-2 align-items-center">
+				    <input type="time" class="form-control" th:field="*{dinnerStart}">
+				    <span class="fw-bold">〜</span>
+				    <input type="time" class="form-control" th:field="*{dinnerEnd}">
+				  </div>
+				  <div class="text-danger small" th:if="${#fields.hasErrors('dinnerStart')}" th:errors="*{dinnerStart}"></div>
+				  <div class="text-danger small" th:if="${#fields.hasErrors('dinnerEnd')}" th:errors="*{dinnerEnd}"></div>
+				</div>
+
+				<!-- ランチ価格帯 -->
+				<div class="mb-3">
+				  <label class="form-label">ランチ価格帯</label>
+				  <div class="d-flex gap-2 align-items-center">
+				    <input type="number" class="form-control" th:field="*{lunchPriceMin}" placeholder="例：1000">
+				    <span class="fw-bold">〜</span>
+				    <input type="number" class="form-control" th:field="*{lunchPriceMax}" placeholder="例：2000">
+				  </div>
+				  <div class="text-danger small" th:if="${#fields.hasErrors('lunchPriceMin')}" th:errors="*{lunchPriceMin}"></div>
+				  <div class="text-danger small" th:if="${#fields.hasErrors('lunchPriceMax')}" th:errors="*{lunchPriceMax}"></div>
+				</div>
+
+				<!-- ディナー価格帯 -->
+				<div class="mb-3">
+				  <label class="form-label">ディナー価格帯</label>
+				  <div class="d-flex gap-2 align-items-center">
+				    <input type="number" class="form-control" th:field="*{dinnerPriceMin}" placeholder="例：3000">
+				    <span class="fw-bold">〜</span>
+				    <input type="number" class="form-control" th:field="*{dinnerPriceMax}" placeholder="例：5000">
+				  </div>
+				  <div class="text-danger small" th:if="${#fields.hasErrors('dinnerPriceMin')}" th:errors="*{dinnerPriceMin}"></div>
+				  <div class="text-danger small" th:if="${#fields.hasErrors('dinnerPriceMax')}" th:errors="*{dinnerPriceMax}"></div>
+				</div>
+
+				<!-- 郵便番号 -->
+				<div class="mb-3">
+				  <label for="postalCode" class="form-label">郵便番号</label>
+				  <input type="text" class="form-control" id="postalCode" th:field="*{postalCode}">
+				  <div class="text-danger small mt-1" th:if="${#fields.hasErrors('postalCode')}" th:errors="*{postalCode}"></div>
+				</div>
+
+				<!-- 住所 -->
+				<div class="mb-3">
+				  <label for="address" class="form-label">住所</label>
+				  <input type="text" class="form-control" id="address" th:field="*{address}">
+				  <div class="text-danger small mt-1" th:if="${#fields.hasErrors('address')}" th:errors="*{address}"></div>
+				</div>
+
+				<!-- 電話番号 -->
+				<div class="mb-3">
+				  <label for="phoneNumber" class="form-label">電話番号</label>
+				  <input type="tel" class="form-control" id="phoneNumber" th:field="*{phoneNumber}">
+				  <div class="text-danger small mt-1" th:if="${#fields.hasErrors('phoneNumber')}" th:errors="*{phoneNumber}"></div>
+				</div>
+
+				<!-- 定休日（エラーメッセージ不要のためそのまま） -->
+				<div class="mb-4">
+				  <label for="holiday" class="form-label">定休日</label>
+				  <input type="text" class="form-control" id="holiday" th:field="*{holiday}">
+				</div>
+
+                <!-- 登録ボタン -->
+                <div class="text-center">
+                  <button type="submit" class="btn nagoyameshi-btn text-white shadow-sm">登録</button>
+                </div>
+              </form>
+
+            </div>
+          </div>
+        </div>
+      </main>
+      <div th:replace="~{fragment :: footer}"></div>
+	  <div th:replace="~{fragment :: scripts}"></div>
+    </div>
+
+	<!-- JavaScript：画像プレビュー用 -->
+	<script>
+	  function previewImage(event, previewId) {
+	    const file = event.target.files[0];
+	    const previewContainer = document.getElementById(previewId);
+
+	    if (file && file.type.startsWith("image/")) {
+	      const reader = new FileReader();
+	      reader.onload = function(e) {
+	        previewContainer.innerHTML = `<img src="${e.target.result}" class="img-fluid border" style="max-height: 300px;">`;
+	      };
+	      reader.readAsDataURL(file);
+	    } else {
+	      previewContainer.innerHTML = "<p class='text-danger'>画像ファイルを選択してください</p>";
+	    }
+	  }
+	</script>
+  </body>
+</html>

@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>予約確認</title>
+  <div th:replace="~{fragment :: meta}"></div>
+  <div th:replace="~{fragment :: styles}"></div>
+</head>
+<body>
+<div class="nagoyameshi-wrapper">
+  <div th:replace="~{fragment :: header}"></div>
+  <main>
+    <div class="container py-5 nagoyameshi-container">
+      <div class="row justify-content-center">
+        <div class="col-xl-10">
+
+          <h2 class="text-center mb-5">予約内容の確認</h2>
+
+          <div class="row">
+            <!-- 左側：予約内容の確認 -->
+            <div class="col-md-6 mb-4">
+              <div class="card">
+                <div class="card-header bg-secondary text-white">ご入力いただいた情報</div>
+                <div class="card-body">
+                  <p><strong>店舗名：</strong> <span th:text="${restaurant.name}">店舗名</span></p>
+                  <p><strong>予約日：</strong> <span th:text="${reservationForm.visitDate}">2025-08-01</span></p>
+                  <p><strong>予約時間：</strong> <span th:text="${#temporals.format(reservationForm.visitTime, 'HH:mm')}">19:00</span></p>
+                  <p><strong>人数：</strong> <span th:text="${reservationForm.numberOfPeople}">2</span> 名</p>
+                  <p><strong>定休日：</strong> <span th:text="${restaurant.holiday}">なし</span></p>
+                  <p><strong>昼営業時間：</strong> 
+                    <span th:if="${restaurant.lunchStart != null}" 
+                          th:text="${#temporals.format(restaurant.lunchStart, 'HH:mm')} + '〜' + ${#temporals.format(restaurant.lunchEnd, 'HH:mm')}"></span>
+                  </p>
+                  <p><strong>夜営業時間：</strong> 
+                    <span th:if="${restaurant.dinnerStart != null}" 
+                          th:text="${#temporals.format(restaurant.dinnerStart, 'HH:mm')} + '〜' + ${#temporals.format(restaurant.dinnerEnd, 'HH:mm')}"></span>
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            <!-- 右側：予約確定ボタン -->
+            <div class="col-md-6 mb-4">
+              <form th:action="@{/reservations}" method="post" th:object="${reservationForm}">
+                <!-- 🔔 バリデーションエラー表示をフォーム内に移動 -->
+                <div th:if="${#fields.hasErrors()}">
+                  <div class="alert alert-danger">
+                    <ul>
+                      <li th:each="err : ${#fields.errors('*')}" th:text="${err}"></li>
+                    </ul>
+                  </div>
+                </div>
+
+                <input type="hidden" th:field="*{restaurantId}">
+                <input type="hidden" th:field="*{visitDate}">
+                <input type="hidden" th:field="*{visitTime}">
+                <input type="hidden" th:field="*{numberOfPeople}">
+
+                <div class="d-grid gap-3 mt-4">
+                  <button type="submit" class="btn btn-success btn-lg">この内容で予約を確定する</button>
+                  <a th:href="@{/reservations/new(restaurantId=${restaurant.id})}" class="btn btn-outline-secondary btn-lg">予約内容を修正する</a>
+                </div>
+              </form>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </main>
+  <div th:replace="~{fragment :: footer}"></div>
+</div>
+<div th:replace="~{fragment :: scripts}"></div>
+</body>
+</html>

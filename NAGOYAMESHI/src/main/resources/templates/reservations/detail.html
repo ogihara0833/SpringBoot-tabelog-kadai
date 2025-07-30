@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html xmlns:th="https://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>予約詳細</title>
+  <div th:replace="~{fragment :: meta}"></div>
+  <div th:replace="~{fragment :: styles}"></div>
+</head>
+<body>
+<div class="nagoyameshi-wrapper">
+  <div th:replace="~{fragment :: header}"></div>
+
+  <main>
+    <div class="container py-5 nagoyameshi-container">
+      <div class="row justify-content-center">
+        <div class="col-md-8">
+          <h2 class="text-center mb-4">予約内容の詳細</h2>
+
+          <div class="card">
+            <div class="card-body">
+              <p><strong>店舗名：</strong> <span th:text="${restaurant.name}">チョ・ツィゲ・ムー</span></p>
+              <p><strong>予約日：</strong> <span th:text="${reservation.visitDate}">2025-08-01</span></p>
+              <p><strong>予約時間：</strong> <span th:text="${#temporals.format(reservation.visitTime, 'HH:mm')}">19:00</span></p>
+              <p><strong>人数：</strong> <span th:text="${reservation.numberOfPeople}">2</span> 名</p>
+              <hr>
+              <p><strong>定休日：</strong> <span th:text="${restaurant.holiday}">なし</span></p>
+              <p><strong>昼営業時間：</strong>
+                <span th:text="${#temporals.format(restaurant.lunchStart, 'HH:mm')} + '〜' + ${#temporals.format(restaurant.lunchEnd, 'HH:mm')}"></span>
+              </p>
+              <p><strong>夜営業時間：</strong>
+                <span th:text="${#temporals.format(restaurant.dinnerStart, 'HH:mm')} + '〜' + ${#temporals.format(restaurant.dinnerEnd, 'HH:mm')}"></span>
+              </p>
+              <p><strong>住所：</strong> <span th:text="${restaurant.address}">兵庫県佐々木市松本町西之園6-3-10</span></p>
+              <p><strong>電話番号：</strong> <span th:text="${restaurant.phoneNumber}">09662-5-7881</span></p>
+            </div>
+          </div>
+
+          <div class="d-grid gap-2 col-6 mx-auto mt-4">
+            <a th:href="@{/reservations}" class="btn btn-outline-secondary">一覧に戻る</a>
+            <a th:href="@{/reservations/edit(id=${reservation.id})}" class="btn btn-warning">予約を変更する</a>
+            <form th:action="@{/reservations/cancel}" method="post">
+              <input type="hidden" name="reservationId" th:value="${reservation.id}">
+              <button type="submit" class="btn btn-danger"
+                      onclick="return confirm('本当にキャンセルしますか？');">予約をキャンセルする</button>
+            </form>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <div th:replace="~{fragment :: footer}"></div>
+</div>
+<div th:replace="~{fragment :: scripts}"></div>
+</body>
+</html>

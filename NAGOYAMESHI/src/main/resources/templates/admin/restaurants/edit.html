@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html xmlns:th="https://www.thymeleaf.org">
+  <head>
+    <div th:replace="~{fragment :: meta}"></div>
+    <div th:replace="~{fragment :: styles}"></div>
+    <title>店舗編集</title>
+  </head>
+  <body>
+    <div class="nagoyameshi-wrapper">
+      <div th:replace="~{fragment :: header}"></div>
+      <main>
+        <div class="container pt-5 pb-5 nagoyameshi-container">
+          <div class="row justify-content-center">
+            <div class="col-lg-9">
+              <h1 class="mb-4 text-center">店舗編集</h1>
+              <!-- ⭐ 管理者専用として表示 -->
+              <div class="mb-3 text-end">
+                <form th:action="@{/admin/restaurants/{id}/feature-toggle(id=*{id})}" method="post">
+                  <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+                  <button type="submit" class="btn btn-sm" th:classappend="${restaurantEditForm.isFeatured} ? 'btn-warning' : 'btn-outline-warning'">
+                    <span th:text="${restaurantEditForm.isFeatured != null && restaurantEditForm.isFeatured ? '★ 注目解除' : '☆ 注目する'}"></span>
+                  </button>
+                </form>
+              </div>
+              <!-- 編集フォーム -->
+              <form th:action="@{/admin/restaurants/{id}/update(id=*{id})}" method="post" enctype="multipart/form-data" th:object="${restaurantEditForm}">
+                <input type="hidden" th:field="*{id}" />
+                <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+                <!-- 注目フラグの値保持（false/nullを避ける） -->
+                <input type="hidden" th:field="*{isFeatured}" />
+                <!-- 店名 -->
+                <div class="mb-3">
+                  <label class="form-label">店名</label>
+                  <input type="text" class="form-control" th:field="*{name}" />
+                  <div class="text-danger small" th:if="${#fields.hasErrors('name')}" th:errors="*{name}"></div>
+                </div>
+                <!-- 店舗画像 -->
+                <div class="mb-3">
+                  <label class="form-label">店舗画像</label>
+                  <input type="file" class="form-control" th:field="*{mainImageFile}" onchange="previewImage(event, 'mainImagePreview')" />
+                  <!-- プレビュー領域 -->
+                  <div class="mt-2" id="mainImagePreview">
+                    <!-- JSによるプレビューが優先されるが、初期画像は Thymeleaf で出す -->
+                    <div th:if="${restaurantEditForm.imageName != null and !restaurantEditForm.imageName.isEmpty()}">
+                      <img th:src="@{/storage/{img}(img=${restaurantEditForm.imageName})}" class="img-fluid border" style="max-height:300px;" />
+                    </div>
+                  </div>
+                  <div class="text-danger small" th:if="${#fields.hasErrors('mainImageFile')}" th:errors="*{mainImageFile}"></div>
+                </div>
+                <!-- メニュー画像 -->
+                <div class="mb-3">
+                  <label class="form-label">メニュー画像</label>
+                  <input type="file" class="form-control" th:field="*{menuImageFile}" onchange="previewImage(event, 'menuImagePreview')" />
+                  <!-- プレビュー領域 -->
+                  <div class="mt-2" id="menuImagePreview">
+                    <div th:if="${restaurantEditForm.menuImageName != null and !restaurantEditForm.menuImageName.isEmpty()}">
+                      <img th:src="@{/storage/{img}(img=${restaurantEditForm.menuImageName})}" class="img-fluid border" style="max-height:300px;" />
+                    </div>
+                  </div>
+                  <div class="text-danger small" th:if="${#fields.hasErrors('menuImageFile')}" th:errors="*{menuImageFile}"></div>
+                </div>
+                <!-- カテゴリ選択 -->
+                <div class="mb-3">
+                  <label class="form-label">カテゴリ</label>
+                  <select class="form-select" th:field="*{categoryId}">
+                    <option value="">選択してください</option>
+                    <option th:each="category : ${categoryList}" th:value="${category.id}" th:text="${category.name}"></option>
+                  </select>
+                  <div class="text-danger small" th:if="${#fields.hasErrors('categoryId')}" th:errors="*{categoryId}"></div>
+                </div>
+                <!-- 店舗説明 -->
+                <div class="mb-3">
+                  <label class="form-label">店舗説明</label>
+                  <textarea class="form-control" th:field="*{description}" rows="4"></textarea>
+                  <div class="text-danger small" th:if="${#fields.hasErrors('description')}" th:errors="*{description}"></div>
+                </div>
+                <!-- 昼の営業時間 -->
+                <div class="mb-3">
+                  <label class="form-label">昼の営業時間</label>
+                  <div class="d-flex gap-2 align-items-center">
+                    <input type="time" class="form-control" th:field="*{lunchStart}">
+                    <span class="fw-bold">〜</span>
+                    <input type="time" class="form-control" th:field="*{lunchEnd}">
+                  </div>
+                  <div class="text-danger small" th:if="${#fields.hasErrors('lunchStart')}" th:errors="*{lunchStart}"></div>
+                  <div class="text-danger small" th:if="${#fields.hasErrors('lunchEnd')}" th:errors="*{lunchEnd}"></div>
+                </div>
+                <!-- 夜の営業時間 -->
+                <div class="mb-3">
+                  <label class="form-label">夜の営業時間</label>
+                  <div class="d-flex gap-2 align-items-center">
+                    <input type="time" class="form-control" th:field="*{dinnerStart}">
+                    <span class="fw-bold">〜</span>
+                    <input type="time" class="form-control" th:field="*{dinnerEnd}">
+                  </div>
+                  <div class="text-danger small" th:if="${#fields.hasErrors('dinnerStart')}" th:errors="*{dinnerStart}"></div>
+                  <div class="text-danger small" th:if="${#fields.hasErrors('dinnerEnd')}" th:errors="*{dinnerEnd}"></div>
+                </div>
+                <!-- ランチ価格帯 -->
+                <div class="mb-3">
+                  <label class="form-label">ランチ価格帯</label>
+                  <div class="d-flex gap-2 align-items-center">
+                    <input type="number" class="form-control" th:field="*{lunchPriceMin}" placeholder="例：1000">
+                    <span class="fw-bold">〜</span>
+                    <input type="number" class="form-control" th:field="*{lunchPriceMax}" placeholder="例：2000">
+                  </div>
+                  <div class="text-danger small" th:if="${#fields.hasErrors('lunchPriceMin')}" th:errors="*{lunchPriceMin}"></div>
+                  <div class="text-danger small" th:if="${#fields.hasErrors('lunchPriceMax')}" th:errors="*{lunchPriceMax}"></div>
+                </div>
+                <!-- ディナー価格帯 -->
+                <div class="mb-3">
+                  <label class="form-label">ディナー価格帯</label>
+                  <div class="d-flex gap-2 align-items-center">
+                    <input type="number" class="form-control" th:field="*{dinnerPriceMin}" placeholder="例：3000">
+                    <span class="fw-bold">〜</span>
+                    <input type="number" class="form-control" th:field="*{dinnerPriceMax}" placeholder="例：5000">
+                  </div>
+                  <div class="text-danger small" th:if="${#fields.hasErrors('dinnerPriceMin')}" th:errors="*{dinnerPriceMin}"></div>
+                  <div class="text-danger small" th:if="${#fields.hasErrors('dinnerPriceMax')}" th:errors="*{dinnerPriceMax}"></div>
+                </div>
+                <!-- 郵便番号 -->
+                <div class="mb-3">
+                  <label class="form-label">郵便番号</label>
+                  <input type="text" class="form-control" th:field="*{postalCode}" placeholder="例：460-0001">
+                  <div class="text-danger small" th:if="${#fields.hasErrors('postalCode')}" th:errors="*{postalCode}"></div>
+                </div>
+                <!-- 住所 -->
+                <div class="mb-3">
+                  <label class="form-label">住所</label>
+                  <input type="text" class="form-control" th:field="*{address}" placeholder="例：名古屋市中区栄1-1-1">
+                  <div class="text-danger small" th:if="${#fields.hasErrors('address')}" th:errors="*{address}"></div>
+                </div>
+                <!-- 電話番号 -->
+                <div class="mb-3">
+                  <label class="form-label">電話番号</label>
+                  <input type="tel" class="form-control" th:field="*{phoneNumber}" placeholder="例：052-123-4567">
+                  <div class="text-danger small" th:if="${#fields.hasErrors('phoneNumber')}" th:errors="*{phoneNumber}"></div>
+                </div>
+                <!-- 定休日（任意項目） -->
+                <div class="mb-4">
+                  <label class="form-label">定休日</label>
+                  <input type="text" class="form-control" th:field="*{holiday}" placeholder="例：水曜日">
+                </div>
+                <!-- 更新ボタン -->
+                <div class="text-center">
+                  <button type="submit" class="btn nagoyameshi-btn text-white shadow-sm">更新</button>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+      </main>
+      <div th:replace="~{fragment :: footer}"></div>
+    </div>
+    <div th:replace="~{fragment :: scripts}"></div>
+    <script th:src="@{/js/preview.js}"></script>
+  </body>
+</html>

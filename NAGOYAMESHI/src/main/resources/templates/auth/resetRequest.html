@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>パスワード再設定リクエスト</title>
+  <div th:replace="~{fragment :: meta}"></div>
+  <div th:replace="~{fragment :: styles}"></div>
+</head>
+<body>
+<div class="nagoyameshi-wrapper">
+  <div th:replace="~{fragment :: header}"></div>
+  <main>
+    <div class="container pt-4 pb-5 nagoyameshi-container">
+      <div class="row justify-content-center">
+        <div class="col-md-6">
+          <h2 class="mb-4 text-center">パスワードを再設定する</h2>
+
+          <!-- ✅ 成功・エラーのFlashメッセージ -->
+          <div th:if="${successMessage}" class="alert alert-success" th:text="${successMessage}"></div>
+          <div th:if="${errorMessage}" class="alert alert-danger" th:text="${errorMessage}"></div>
+
+          <form th:action="@{/reset-password/request}" method="post">
+            <div class="mb-3">
+              <label for="email" class="form-label fw-bold">登録メールアドレス</label>
+              <input type="email" id="email" name="email" class="form-control" required />
+            </div>
+
+            <div class="text-center">
+              <button type="submit" class="btn btn-primary">リセットリンクを送信</button>
+            </div>
+          </form>
+
+          <div class="mt-4 text-center">
+            <a class="btn btn-secondary" th:href="@{/login}">ログイン画面に戻る</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+  <div th:replace="~{fragment :: footer}"></div>
+</div>
+<div th:replace="~{fragment :: scripts}"></div>
+</body>
+</html>

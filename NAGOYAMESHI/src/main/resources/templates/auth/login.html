@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html xmlns:th="https://www.thymeleaf.org">
+<head>
+  <div th:replace="~{fragment :: meta}"></div>
+  <div th:replace="~{fragment :: styles}"></div>
+  <title>ログイン | NAGOYAMESHI</title>
+</head>
+<body>
+  <div class="nagoyameshi-wrapper">
+
+    <!-- ヘッダー -->
+    <div th:replace="~{fragment :: header}"></div>
+
+    <main>
+      <div class="container pt-5 pb-5 nagoyameshi-container">
+        <div class="row justify-content-center">
+          <div class="col-xl-4 col-lg-5 col-md-6 col-sm-8">
+            <h1 class="text-center mb-4">ログイン</h1>
+			
+			<div class="row mb-1">
+              <p class="text-danger">
+                 動作確認用アカウント（一般）<br>
+                 メールアドレス：user@example.com<br>
+                 パスワード：password
+              </p>
+			  <p class="text-danger">
+				動作確認用アカウント（管理者）<br>
+				メールアドレス：admin@example.com<br>
+				パスワード：password
+			  </p>
+			  <p class="text-danger">
+			  	動作確認用アカウント（有料会員）<br>
+			  	メールアドレス：premium@example.com<br>
+			  	パスワード：password
+			  </p>
+            </div>
+
+            <!-- ログイン失敗時のメッセージ -->
+            <div th:if="${param.error}" class="alert alert-danger text-center">
+              メールアドレスまたはパスワードが正しくありません。
+            </div>
+
+            <form th:action="@{/login}" method="post">
+              <div class="mb-3">
+                <input type="text" name="username" class="form-control" placeholder="メールアドレス"
+                  autocomplete="email" required autofocus>
+              </div>
+
+              <div class="mb-4">
+                <input type="password" name="password" class="form-control" placeholder="パスワード"
+                  autocomplete="current-password" required>
+              </div>
+
+              <div class="d-grid">
+                <button type="submit" class="btn btn-primary w-100 shadow-sm">ログイン</button>
+              </div>
+            </form>
+
+            <div class="text-center mt-4">
+              <a th:href="@{/signup}" class="text-decoration-none">会員登録はこちら</a>
+            </div>
+			
+			<!--パスワードリセットリンク-->
+			<div class="text-center mt-2">
+			  <a th:href="@{/reset-password}" class="text-decoration-none text-muted">パスワードを忘れた方はこちら</a>
+			</div>
+
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <!-- フッター -->
+    <div th:replace="~{fragment :: footer}"></div>
+  </div>
+
+  <div th:replace="~{fragment :: scripts}"></div>
+</body>
+</html>

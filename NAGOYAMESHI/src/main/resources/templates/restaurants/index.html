@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html xmlns:th="https://www.thymeleaf.org">
+<head>
+  <div th:replace="~{fragment :: meta}"></div>
+  <div th:replace="~{fragment :: styles}"></div>
+  <title>店舗一覧</title>
+</head>
+<body>
+<div class="nagoyameshi-wrapper">
+  <div th:replace="~{fragment :: header}"></div>
+
+  <main>
+    <div class="container pt-4 pb-5 nagoyameshi-container">
+      <div class="row justify-content-center">
+        <div class="col-xl-10">
+          <h1 class="mb-4 text-center">店舗一覧</h1>
+
+          <!-- 🔍 検索フォーム -->
+          <form method="get" th:action="@{/restaurants}" class="mb-4">
+            <div class="row g-3">
+              <div class="col-md-3">
+                <input type="text" class="form-control" name="keyword" placeholder="キーワード"
+                       th:value="${keyword}">
+              </div>
+              <div class="col-md-3">
+                <select class="form-select" name="categoryId">
+                  <option value="">カテゴリ</option>
+                  <option th:each="cat : ${categoryList}"
+                          th:value="${cat.id}"
+                          th:text="${cat.name}"
+                          th:selected="${cat.id == categoryId}">
+                  </option>
+                </select>
+              </div>
+              <div class="col-md-2">
+                <input type="number" class="form-control" name="maxBudget" placeholder="予算上限（円）"
+                       th:value="${maxBudget}">
+              </div>
+              <div class="col-md-2">
+                <input type="text" class="form-control" name="area" placeholder="エリア"
+                       th:value="${area}">
+              </div>
+              <div class="col-md-2">
+                <button type="submit" class="btn btn-primary w-100">検索</button>
+              </div>
+            </div>
+          </form>
+
+          <!-- 📋 一覧表示 -->
+          <table class="table">
+            <thead>
+              <tr>
+                <th>店舗名</th>
+                <th>ジャンル</th>
+                <th>住所</th>
+                <th>価格帯</th>
+                <th>営業時間</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr th:each="restaurant : ${restaurantPage.content}">
+                <td th:text="${restaurant.name}"></td>
+                <td th:text="${restaurant.category.name}"></td>
+                <td th:text="${restaurant.address}"></td>
+                <td>
+                  <span th:if="${restaurant.lunchPriceMin != null}" 
+                        th:text="'昼：' + ${restaurant.lunchPriceMin} + '〜' + ${restaurant.lunchPriceMax} + '円'"></span>
+                  <br th:if="${restaurant.dinnerPriceMin != null}" />
+                  <span th:if="${restaurant.dinnerPriceMin != null}"
+                        th:text="'夜：' + ${restaurant.dinnerPriceMin} + '〜' + ${restaurant.dinnerPriceMax} + '円'"></span>
+                </td>
+                <td>
+                  <span th:if="${restaurant.lunchStart != null}"
+                        th:text="'昼：' + ${#temporals.format(restaurant.lunchStart, 'HH:mm')} + '〜' + ${#temporals.format(restaurant.lunchEnd, 'HH:mm')}"></span>
+                  <br th:if="${restaurant.dinnerStart != null}" />
+                  <span th:if="${restaurant.dinnerStart != null}"
+                        th:text="'夜：' + ${#temporals.format(restaurant.dinnerStart, 'HH:mm')} + '〜' + ${#temporals.format(restaurant.dinnerEnd, 'HH:mm')}"></span>
+                </td>
+                <td>
+                  <a class="btn btn-sm btn-outline-primary"
+                     th:href="@{/restaurants/{id}(id=${restaurant.id})}">詳細</a>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+
+          <!-- ⏩ ページネーション -->
+          <div th:if="${restaurantPage.totalPages > 1}" class="d-flex justify-content-center">
+            <ul class="pagination">
+              <li class="page-item" th:classappend="${restaurantPage.first} ? 'disabled'">
+                <a class="page-link"
+                   th:href="@{/restaurants(page=${restaurantPage.number - 1},
+                                           keyword=${keyword},
+                                           categoryId=${categoryId},
+                                           maxBudget=${maxBudget},
+                                           area=${area})}">前</a>
+              </li>
+              <li th:each="i : ${#numbers.sequence(0, restaurantPage.totalPages - 1)}"
+                  class="page-item" th:classappend="${i == restaurantPage.number} ? 'active'">
+                <a class="page-link"
+                   th:href="@{/restaurants(page=${i},
+                                           keyword=${keyword},
+                                           categoryId=${categoryId},
+                                           maxBudget=${maxBudget},
+                                           area=${area})}"
+                   th:text="${i + 1}"></a>
+              </li>
+              <li class="page-item" th:classappend="${restaurantPage.last} ? 'disabled'">
+                <a class="page-link"
+                   th:href="@{/restaurants(page=${restaurantPage.number + 1},
+                                           keyword=${keyword},
+                                           categoryId=${categoryId},
+                                           maxBudget=${maxBudget},
+                                           area=${area})}">次</a>
+              </li>
+            </ul>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <div th:replace="~{fragment :: footer}"></div>
+</div>
+<div th:replace="~{fragment :: scripts}"></div>
+</body>
+</html>

@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html xmlns:th="https://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>予約変更</title>
+  <div th:replace="~{fragment :: meta}"></div>
+  <div th:replace="~{fragment :: styles}"></div>
+</head>
+<body>
+<div class="nagoyameshi-wrapper">
+  <div th:replace="~{fragment :: header}"></div>
+
+  <main>
+    <div class="container py-5 nagoyameshi-container">
+      <h2 class="text-center mb-5">予約の変更</h2>
+
+      <div class="row justify-content-center">
+        <div class="col-md-6">
+          <form th:action="@{/reservations/update}" method="post" th:object="${reservationForm}" class="reservation-form">
+
+            <!-- ID保持（hidden） -->
+            <input type="hidden" th:field="*{restaurantId}">
+            <input type="hidden" name="reservationId" th:value="${reservation.id}">
+
+            <!-- 店舗名表示 -->
+            <div class="mb-3">
+              <label>店舗名</label>
+              <p th:text="${restaurant.name}" class="form-control-plaintext">店舗名</p>
+            </div>
+
+            <!-- 予約日 -->
+            <div class="mb-3">
+              <label for="visitDate">予約日</label>
+              <input type="date" th:field="*{visitDate}" id="visitDate" class="form-control" required>
+            </div>
+
+            <!-- 予約時間 -->
+            <div class="mb-3">
+              <label for="visitTime">予約時間</label>
+              <input type="time" th:field="*{visitTime}" id="visitTime" class="form-control" required>
+			  <div class="text-danger small" th:if="${#fields.hasErrors('visitTime')}" th:errors="*{visitTime}"></div>
+			</div>
+
+            <!-- 人数 -->
+            <div class="mb-3">
+              <label for="numberOfPeople">人数</label>
+              <input type="number" th:field="*{numberOfPeople}" id="numberOfPeople" min="1" class="form-control" required>
+            </div>
+
+            <!-- ボタン -->
+            <div class="d-grid gap-2">
+              <button type="submit" class="btn btn-warning">この内容で予約を変更する</button>
+              <a th:href="@{/reservations}" class="btn btn-outline-secondary">予約一覧に戻る</a>
+            </div>
+          </form>
+        </div>
+      </div>
+
+    </div>
+  </main>
+
+  <div th:replace="~{fragment :: footer}"></div>
+</div>
+<div th:replace="~{fragment :: scripts}"></div>
+</body>
+</html>

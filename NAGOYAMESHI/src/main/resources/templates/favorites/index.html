@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html xmlns:th="https://www.thymeleaf.org">
+<head>
+  <div th:replace="~{fragment :: meta}"></div>
+  <div th:replace="~{fragment :: styles}"></div>
+  <title>お気に入り一覧</title>
+</head>
+<body>
+<div class="nagoyameshi-wrapper">
+  <div th:replace="~{fragment :: header}"></div>
+  <main>
+    <div class="container pt-4 pb-5 nagoyameshi-container">
+      <h1 class="mb-4 text-center">お気に入り一覧</h1>
+
+      <!-- ✅ お気に入りがあるか確認 -->
+      <div th:if="${favoritePage.totalElements == 0}">
+        <p class="text-center">お気に入り登録された店舗はありません。</p>
+      </div>
+
+      <!-- ✅ 一覧表示 -->
+      <div class="row" th:each="favorite : ${favoritePage.content}">
+        <div class="col-md-6 mb-4">
+          <div class="card h-100">
+            <img th:if="${favorite.restaurant.imageName != null}"
+                 th:src="@{/storage/{img}(img=${favorite.restaurant.imageName})}"
+                 class="card-img-top" alt="店舗画像">
+            <img th:if="${favorite.restaurant.imageName == null}"
+                 th:src="@{/images/noImage.png}" class="card-img-top" alt="NO IMAGE">
+
+            <div class="card-body">
+              <h5 class="card-title" th:text="${favorite.restaurant.name}">店舗名</h5>
+              <p class="card-text" th:text="${favorite.restaurant.description}">店舗紹介文</p>
+              <a class="btn btn-primary"
+                 th:href="@{/restaurants/{id}(id=${favorite.restaurant.id})}">詳細を見る</a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ✅ ページネーション -->
+      <nav th:if="${favoritePage.totalPages > 1}">
+        <ul class="pagination justify-content-center">
+          <li class="page-item" th:classappend="${favoritePage.first} ? 'disabled'">
+            <a class="page-link" th:href="@{/favorites(page=${favoritePage.number - 1})}">前へ</a>
+          </li>
+          <li class="page-item" th:each="i : ${#numbers.sequence(0, favoritePage.totalPages - 1)}"
+              th:classappend="${favoritePage.number == i} ? 'active'">
+            <a class="page-link" th:href="@{/favorites(page=${i})}" th:text="${i + 1}">1</a>
+          </li>
+          <li class="page-item" th:classappend="${favoritePage.last} ? 'disabled'">
+            <a class="page-link" th:href="@{/favorites(page=${favoritePage.number + 1})}">次へ</a>
+          </li>
+        </ul>
+      </nav>
+    </div>
+  </main>
+  <div th:replace="~{fragment :: footer}"></div>
+</div>
+<div th:replace="~{fragment :: scripts}"></div>
+</body>
+</html>

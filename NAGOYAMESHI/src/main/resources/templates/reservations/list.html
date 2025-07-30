@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html xmlns:th="https://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>予約一覧</title>
+  <div th:replace="~{fragment :: meta}"></div>
+  <div th:replace="~{fragment :: styles}"></div>
+</head>
+<body>
+<div class="nagoyameshi-wrapper">
+  <div th:replace="~{fragment :: header}"></div>
+
+  <main>
+    <div class="container py-5 nagoyameshi-container">
+      <h2 class="text-center mb-4">あなたの予約一覧</h2>
+
+      <div th:if="${reservations.isEmpty()}">
+        <p class="text-muted text-center">まだ予約はありません。</p>
+        <div class="text-center mt-3">
+          <a th:href="@{/restaurants}" class="btn btn-outline-primary">店舗を探す</a>
+        </div>
+      </div>
+
+      <div th:unless="${reservations.isEmpty()}">
+        <div class="table-responsive">
+          <table class="table table-bordered table-striped">
+            <thead class="table-light">
+              <tr>
+                <th>店舗名</th>
+                <th>予約日</th>
+                <th>人数</th>
+                <th>操作</th>
+              </tr>
+			  <tbody>
+				<tr th:each="reservation : ${reservations}">
+			      <td th:text="${reservation.restaurant.name}">店舗名</td>
+			      <td th:text="${reservation.visitDate}">2025-08-01</td>
+			      <td th:text="${reservation.numberOfPeople}">2</td>
+			      <td class="d-flex gap-2">
+			        <!-- 🔍 詳細画面へ -->
+			        <a th:href="@{/reservations/detail(id=${reservation.id})}" class="btn btn-sm btn-outline-primary">詳細</a>
+
+			        <!-- ✏️ 予約変更画面へ -->
+			        <a th:href="@{/reservations/edit(id=${reservation.id})}" class="btn btn-sm btn-outline-warning">変更</a>
+
+			        <!-- ❌ キャンセル処理 -->
+			        <form th:action="@{/reservations/cancel}" method="post">
+			          <input type="hidden" name="reservationId" th:value="${reservation.id}">
+			          <button type="submit" class="btn btn-sm btn-danger"
+			                  onclick="return confirm('本当にキャンセルしますか？');">キャンセル</button>
+			        </form>
+			      </td>
+			    </tr>
+			  </tbody>
+          </table>
+        </div>
+      </div>
+
+    </div>
+  </main>
+
+  <div th:replace="~{fragment :: footer}"></div>
+</div>
+<div th:replace="~{fragment :: scripts}"></div>
+</body>
+</html>

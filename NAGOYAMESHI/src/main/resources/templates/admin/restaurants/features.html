@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html xmlns:th="https://www.thymeleaf.org">
+<head>
+  <div th:replace="~{fragment :: meta}"></div>
+  <div th:replace="~{fragment :: styles}"></div>
+  <title>注目店舗一覧｜管理者</title>
+</head>
+<body>
+<div class="nagoyameshi-wrapper">
+  <div th:replace="~{fragment :: header}"></div>
+
+  <main>
+    <div class="container pt-4 pb-5 nagoyameshi-container">
+      <h2 class="text-center mb-4 text-warning">★ 注目店舗一覧</h2>
+
+      <!-- ✅ フラッシュメッセージ表示 -->
+      <div th:if="${successMessage}" class="alert alert-success text-center">
+        <span th:text="${successMessage}"></span>
+      </div>
+
+      <div class="row row-cols-lg-5 row-cols-2 g-3">
+        <div class="col" th:each="restaurant : ${featuredRestaurants}">
+          <div class="card h-100 position-relative">
+
+            <!-- 画像 -->
+            <img th:if="${restaurant.imageName != null}" th:src="@{/storage/{img}(img=${restaurant.imageName})}"
+                 class="card-img-top nagoyameshi-vertical-card-image" alt="店舗画像">
+            <img th:unless="${restaurant.imageName != null}" th:src="@{/images/noImage.png}"
+                 class="card-img-top nagoyameshi-vertical-card-image" alt="NO IMAGE">
+
+            <!-- バッジ -->
+            <span class="badge bg-warning text-dark position-absolute top-0 start-0 m-2">★注目</span>
+
+            <!-- 情報 -->
+            <div class="card-body">
+              <h5 class="card-title" th:text="${restaurant.name}"></h5>
+              <p class="card-text mb-1" th:text="${restaurant.address}"></p>
+              <p class="card-text" th:text="${restaurant.category.name}"></p>
+
+              <!-- 管理者切り替えボタン -->
+              <form th:action="@{/admin/restaurants/{id}/feature-toggle(id=${restaurant.id})}" method="post">
+                <input type="hidden" name="isFeatured" value="false" />
+                <button type="submit" class="btn btn-sm btn-outline-danger w-100 mt-2">★ 注目解除</button>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 🔙 戻る -->
+      <div class="text-center mt-4">
+        <a th:href="@{/admin/restaurants}" class="btn btn-secondary">店舗一覧に戻る</a>
+      </div>
+    </div>
+  </main>
+
+  <div th:replace="~{fragment :: footer}"></div>
+</div>
+<div th:replace="~{fragment :: scripts}"></div>
+</body>
+</html>

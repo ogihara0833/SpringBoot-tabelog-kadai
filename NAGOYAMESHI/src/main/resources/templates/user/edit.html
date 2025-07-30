@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html xmlns:th="https://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+  <head>
+    <div th:replace="~{fragment :: meta}"></div>
+    <div th:replace="~{fragment :: styles}"></div>
+    <title>会員情報編集</title>
+  </head>
+  <body>
+    <div class="nagoyameshi-wrapper">
+
+      <!-- ヘッダー -->
+      <div th:replace="~{fragment :: header}"></div>
+
+      <main>
+        <div class="container pb-5 nagoyameshi-container">
+          <div class="row justify-content-center">
+            <div class="col-xl-5 col-lg-6 col-md-8">
+
+              <h1 class="my-4 text-center">会員情報編集</h1>
+
+              <form method="post" th:action="@{/user/update}" th:object="${userEditForm}">
+                <input type="hidden" th:field="*{id}">
+
+                <!-- 氏名 -->
+                <div class="mb-3">
+                  <label class="form-label fw-bold">氏名 <span class="badge bg-danger">必須</span></label>
+                  <input type="text" class="form-control" th:field="*{name}" placeholder="例：山田 太郎" autofocus>
+                  <div class="text-danger small" th:if="${#fields.hasErrors('name')}" th:errors="*{name}"></div>
+                </div>
+
+                <!-- 電話番号 -->
+                <div class="mb-3">
+                  <label class="form-label fw-bold">電話番号 <span class="badge bg-danger">必須</span></label>
+                  <input type="text" class="form-control" th:field="*{phoneNumber}" placeholder="例：090-1234-5678">
+                  <div class="text-danger small" th:if="${#fields.hasErrors('phoneNumber')}" th:errors="*{phoneNumber}"></div>
+                </div>
+
+                <!-- メールアドレス -->
+                <div class="mb-3">
+                  <label class="form-label fw-bold">メールアドレス <span class="badge bg-danger">必須</span></label>
+                  <input type="text" class="form-control" th:field="*{email}" placeholder="例：taro@example.com">
+                  <div class="text-danger small" th:if="${#fields.hasErrors('email')}" th:errors="*{email}"></div>
+                </div>
+
+                <div class="text-center mt-4">
+                  <button type="submit" class="btn btn-primary w-50 shadow-sm">更新</button>
+                </div>
+              </form>
+
+            </div>
+          </div>
+        </div>
+      </main>
+
+      <!-- フッター -->
+      <div th:replace="~{fragment :: footer}"></div>
+    </div>
+
+    <div th:replace="~{fragment :: scripts}"></div>
+  </body>
+</html>

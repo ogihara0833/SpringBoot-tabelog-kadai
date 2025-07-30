@@ -1,0 +1,326 @@
+.position-relative {
+  position: relative;
+}
+
+.badge {
+  font-size: 1rem;
+  padding: 0.4em 0.6em;
+  z-index: 10;
+}
+
+
+/* --------------------------------------------
+  🔶 全体レイアウト・タイポグラフィ
+-------------------------------------------- */
+.logo-text {
+  font-family: 'Noto Sans JP', sans-serif;
+  font-weight: 700;
+  font-size: 1.5rem;
+  color: #ff5722;
+  letter-spacing: 1px;
+  text-decoration: none;
+}
+
+@media screen and (min-width: 1400px) {
+  .nagoyameshi-container {
+    max-width: 1200px;
+  }
+}
+
+/* --------------------------------------------
+  🔶 スライダー関連スタイル（トップ画像）
+-------------------------------------------- */
+.hero-image {
+  height: 100vh;
+  object-fit: cover;
+}
+
+.carousel,
+.carousel-inner,
+.carousel-item {
+  height: 100vh;
+}
+
+.carousel-item img {
+  object-fit: cover;
+  height: 100%;
+}
+
+.carousel-inner {
+  position: relative;
+}
+
+.carousel-caption {
+  position: absolute;
+  top: 50%;
+  left: 0;
+  right: 0;
+  transform: translateY(-50%);
+  color: white;
+  text-align: center;
+  padding: 1rem;
+  z-index: 10;
+  text-shadow: 1px 1px 3px rgba(0,0,0,0.7);
+}
+
+.text-shadow {
+  font-family: 'Noto Sans JP', sans-serif;
+  font-size: 9.2rem;
+  font-weight: 900;
+  color: rgba(255, 255, 255, 0.4); /* 白に近い透明感：ぼやけない */
+  text-shadow:
+    1px 1px 3px rgba(0, 0, 0, 0.1); /* シャープな黒影で締める */
+  letter-spacing: 3px;
+  animation: fadeUp 1s ease-out;
+}
+
+@keyframes fadeUp {
+  0% {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* --------------------------------------------
+  🔶 検索フォーム（ヒーロー上部・半透明スタイル）
+-------------------------------------------- */
+.hero-search-form-container {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translate(-50%, -200%);
+  z-index: 10;
+  background-color: rgba(255, 255, 255, 0.01); /* 透け感 */
+  padding: 20px 30px;
+  border-radius: 12px;
+  max-width: 1200px;
+  width: 95%;
+  backdrop-filter: blur(6px); /* ぼかし */
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.25);
+}
+
+/* 🔶 入力欄の透明度を上げ、フォント見やすく */
+.hero-search-form-container input,
+.hero-search-form-container select {
+  background-color: rgba(255, 255, 255, 0.85);
+  border: 1px solid #ccc;
+  padding: 10px;
+  font-size: 1rem;
+}
+
+/* 🔶 食欲をそそるオレンジ系検索ボタンに変更 */
+.hero-search-form-container button {
+  background-color: #ff5722;
+  color: #fff;
+  border: none;
+  font-weight: bold;
+  padding: 10px 16px;
+  transition: background-color 0.2s ease-in-out;
+}
+
+.hero-search-form-container button:hover {
+  background-color: #e64a19;
+  color: #fff;
+}
+
+
+/* 通常検索フォーム用サイズ制限 */
+.hero-search-form {
+  width: 90%;
+  max-width: 500px;
+}
+
+/* --------------------------------------------
+  🔶 注目店舗カードのスタイル
+-------------------------------------------- */
+
+
+/* --------------------------------------------
+  🔶 ボタン関連（通常・危険・ブランドカラー）
+-------------------------------------------- */
+.nagoyameshi-btn {
+  background-color: #ff5722;
+  border-color: #ff5722;
+  color: #fff;
+  transition: all 0.2s ease-in-out;
+}
+
+.nagoyameshi-btn:hover {
+  background-color: #e64a19;
+  border-color: #e64a19;
+  color: #fff;
+}
+
+.nagoyameshi-btn-danger {
+  background-color: #f2594b !important;
+  transition: 0.1s;
+}
+
+.nagoyameshi-btn-danger:hover {
+  opacity: 0.8;
+}
+
+/* --------------------------------------------
+  🔶 リンクカラー（危険系など）
+-------------------------------------------- */
+.nagoyameshi-link-danger {
+  color: #f2594b;
+}
+
+.nagoyameshi-link-danger:hover {
+  color: #a63c3c;
+}
+
+/* --------------------------------------------
+  🔶 カテゴリー一覧ページ
+-------------------------------------------- */
+.table-wrapper {
+  margin-left: auto;
+  margin-right: auto;
+  max-width: 1300px;
+  padding: 0 1rem;
+}
+
+/* --------------------------------------------
+  🔶 予約昨日関連
+-------------------------------------------- */
+/* フォームセクション全体 */
+.reservation-form {
+  max-width: 500px;
+  margin: 0 auto;
+  padding: 20px 15px;
+  background-color: #f8f9fa;
+  border-radius: 10px;
+}
+
+/* ラベル */
+.reservation-form label {
+  font-weight: bold;
+  display: block;
+  margin-bottom: 6px;
+}
+
+/* 日付・人数入力フィールド */
+.reservation-form input[type="date"],
+.reservation-form input[type="number"] {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ced4da;
+  border-radius: 6px;
+  font-size: 16px;
+  background-color: #ffffff;
+  box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.05);
+}
+
+/* 送信ボタン */
+.reservation-form button {
+  margin-top: 15px;
+  width: 100%;
+  padding: 12px;
+  font-size: 16px;
+  background-color: #28a745;
+  border: none;
+  color: #fff;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.reservation-form button:hover {
+  background-color: #218838;
+}
+/* --------------------------------------------
+  🔶 アップデートページ用スタイル
+-------------------------------------------- */
+
+/* タイトル・リード文 */
+h1.mb-4 {
+  font-size: 2.2rem;
+  font-weight: bold;
+  color: #333;
+}
+
+.lead {
+  font-size: 1.2rem;
+  color: #555;
+}
+
+/* プレミアム特典リスト */
+.premium-benefits {
+  list-style: none;
+  text-align: center;
+  margin: 0 auto 24px;
+  font-size: 1.6rem;
+  padding-left: 0;
+}
+
+.premium-benefits li {
+  position: relative;
+  margin: 0 auto 14px;
+  padding-left: 2rem;
+  max-width: 400px;
+  font-weight: 500;
+  text-align: left;
+}
+
+.premium-benefits li::before {
+  content: '🎁';
+  position: absolute;
+  left: 0;
+  top: 0;
+  font-size: 1.5rem;
+}
+
+/* 説明文（Stripe遷移案内） */
+.info-text {
+  font-size: 0.95rem;
+  color: #444;
+  background-color: #eef6ff;
+  padding: 12px 16px;
+  border-left: 4px solid #0d6efd;
+  border-radius: 6px;
+  box-shadow: 0 0 3px rgba(0,0,0,0.05);
+  margin-bottom: 24px;
+}
+
+/* 登録ボタン（ホバー強調） */
+button.btn-primary {
+  background-color: #0d6efd;
+  border-color: #0d6efd;
+  font-size: 1.1rem;
+  padding: 10px 25px;
+  transition: transform 0.2s ease, background-color 0.2s ease;
+}
+
+button.btn-primary:hover {
+  background-color: #084dbf;
+  border-color: #084dbf;
+  transform: scale(1.02);
+}
+
+/* 入力フォーム項目 */
+input.form-control {
+  font-size: 1rem;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+}
+
+/* --------------------------------------------
+  🔶 その他スタイル
+-------------------------------------------- */
+.nagoyameshi-pre-wrap {
+  white-space: pre-wrap; /* 改行文字で折り返し */
+}
+
+select.form-select option {
+  color: #333;
+}
+
+.alert-danger li {
+  color: #d9534f;
+}

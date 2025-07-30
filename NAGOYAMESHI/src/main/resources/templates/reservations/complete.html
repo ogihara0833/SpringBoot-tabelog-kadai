@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>予約完了</title>
+  <div th:replace="~{fragment :: meta}"></div>
+  <div th:replace="~{fragment :: styles}"></div>
+</head>
+<body>
+<div class="nagoyameshi-wrapper">
+  <div th:replace="~{fragment :: header}"></div>
+  <main>
+    <div class="container py-5 nagoyameshi-container">
+      <div class="row justify-content-center">
+        <div class="col-md-8 text-center">
+          <h2 class="mb-4 text-success">ご予約ありがとうございます</h2>
+          <p class="mb-4 fs-5">ご来店を心よりお待ちしております。</p>
+
+          <div class="d-grid gap-3 col-6 mx-auto">
+            <a th:href="@{/reservations}" class="btn btn-primary btn-lg">予約一覧を見る</a>
+            <a th:href="@{/restaurants}" class="btn btn-outline-secondary btn-lg">店舗一覧に戻る</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+  <div th:replace="~{fragment :: footer}"></div>
+</div>
+<div th:replace="~{fragment :: scripts}"></div>
+</body>
+</html>

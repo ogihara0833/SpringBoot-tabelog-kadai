@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html xmlns:th="https://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">    
+  <head>
+    <div th:replace="~{fragment :: meta}"></div>   
+    <div th:replace="~{fragment :: styles}"></div>
+    <title>会員詳細</title>   
+  </head>
+  <body>
+    <div class="nagoyameshi-wrapper">
+      <!-- ヘッダー -->
+      <div th:replace="~{fragment :: header}"></div>
+
+      <main>
+        <div class="container pb-5 nagoyameshi-container">
+          <div class="row justify-content-center">
+            <div class="col-xl-5 col-lg-6 col-md-8">
+
+              <nav class="my-3" style="--bs-breadcrumb-divider: '>';" aria-label="breadcrumb">
+                <ol class="breadcrumb mb-0"> 
+                  <li class="breadcrumb-item"><a th:href="@{/admin/users}">会員一覧</a></li>
+                  <li class="breadcrumb-item active" aria-current="page">会員詳細</li>
+                </ol>
+              </nav> 
+
+              <h1 class="mb-3 text-center" th:text="${user.name}"></h1>                                                                             
+              
+              <div class="container mb-4">
+
+                <div class="row pb-2 mb-2 border-bottom">
+                  <div class="col-4 fw-bold">ID</div>
+                  <div class="col" th:text="${user.id}"></div>
+                </div>
+
+                <div class="row pb-2 mb-2 border-bottom">
+                  <div class="col-4 fw-bold">氏名</div>
+                  <div class="col" th:text="${user.name}"></div>
+                </div>
+
+                <div class="row pb-2 mb-2 border-bottom">
+                  <div class="col-4 fw-bold">電話番号</div>
+                  <div class="col" th:text="${user.phoneNumber}"></div>
+                </div>
+
+                <div class="row pb-2 mb-2 border-bottom">
+                  <div class="col-4 fw-bold">メールアドレス</div>
+                  <div class="col" th:text="${user.email}"></div>
+                </div>
+				
+				<!-- ロール表示 -->
+				<div class="row pb-2 mb-2 border-bottom">
+				  <div class="col-4 fw-bold">ロール</div>
+				  <div class="col" th:text="${user.role.name}"></div>
+				</div>
+
+				<!-- 有料会員かどうか -->
+				<div class="row pb-2 mb-2 border-bottom">
+				  <div class="col-4 fw-bold">有料会員</div>
+				  <div class="col">
+				    <span th:if="${user.isPremium}" class="text-success">✅</span>
+				    <span th:unless="${user.isPremium}" class="text-danger">❌</span>
+				  </div>
+				</div>
+
+				<!-- Stripe契約ID -->
+				<div class="row pb-2 mb-2 border-bottom">
+				  <div class="col-4 fw-bold">サブスクリプションID</div>
+				  <div class="col" th:text="${user.stripeSubscriptionId != null ? user.stripeSubscriptionId : '-'}"></div>
+				</div>
+
+
+              </div>
+
+            </div>
+          </div>
+        </div>
+      </main>
+
+      <!-- フッター -->
+      <div th:replace="~{fragment :: footer}"></div>
+    </div>    
+    <div th:replace="~{fragment :: scripts}"></div>  
+  </body>
+</html>

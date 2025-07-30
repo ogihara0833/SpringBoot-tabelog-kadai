@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html xmlns:th="https://www.thymeleaf.org">
+<head>
+  <div th:replace="~{fragment :: meta}"></div>
+  <div th:replace="~{fragment :: styles}"></div>
+  <title>N・MESHIメンバー登録</title>
+</head>
+<body>
+  <div class="nagoyameshi-wrapper">
+    <div th:replace="~{fragment :: header}"></div>
+
+    <main>
+      <div class="container pt-5 pb-5 nagoyameshi-container text-center">
+        <h1 class="mb-4">N・MESHIメンバーになる</h1>
+        <p class="lead">プレミアム特典が使えるようになります！</p>
+        <ul class="list-unstyled mb-4 premium-benefits">
+          <li>✅ お気に入り店舗の登録</li>
+          <li>✅ 予約申し込み・履歴確認</li>
+          <li>✅ レビュー投稿・編集・削除</li>
+          <li>✅ メンバークーポン etc...</li>
+          <li>✅ 月額たった￥300</li>
+        </ul>
+
+        <!-- ℹ️ 案内文を追加 -->
+        <p class="info-text mb-4">
+          ボタンを押すと、Stripeが提供する安全な決済ページに移動し、クレジットカード情報を入力して登録できます。<br>
+          アプリ側ではカード情報を保持しませんのでご安心ください。
+        </p>
+
+		<form method="post" th:action="@{/membership/upgrade}">
+		  <!-- ✅ 登録ボタン -->
+		  <button class="btn btn-lg btn-primary px-4 shadow-sm">
+		    N・MESHIメンバーになる（有料）
+		  </button>
+		</form>
+      </div>
+    </main>
+
+    <div th:replace="~{fragment :: footer}"></div>
+  </div>
+  <div th:replace="~{fragment :: scripts}"></div>
+</body>
+</html>
